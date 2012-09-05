@@ -60,9 +60,9 @@ QImage PCAPlayer::IplImage2QImage(IplImage *iplImage) {
 
                 for (int x=0; x < qtImage->width(); x++) {
 
-                        r = data[x * 3 + 0];
+                        b = data[x * 3 + 0];
                         g = data[x * 3 + 1];
-                        b = data[x * 3 + 2];
+                        r = data[x * 3 + 2];
 
                         qtImage->setPixel(x, y, qRgb(r,g,b));
 
