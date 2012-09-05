@@ -17,7 +17,7 @@ for image in files:
     f = f + 1
     if f % stride != 0:
         continue
-    imgraw = cv.imread(os.path.join(sys.argv[1], image), 0)
+    imgraw = cv.imread(os.path.join(sys.argv[1], image), -1)
     imgvector = imgraw.reshape(imgraw.size)
     #print imgvector
     try:
