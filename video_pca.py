@@ -5,9 +5,11 @@ import sys
 import os
 import numpy as np
 
-files = os.listdir(sys.argv[1])
+in_path = sys.argv[1]
+
+files = os.listdir(in_path)
 stride = int(sys.argv[2])
-out_dir = sys.argv[3]
+out_dir = os.path.abspath(in_path) + "_PCA"
 
 f = 0
 matrix_test = None
@@ -34,13 +36,18 @@ mean, eigenvectors = cv.PCACompute(matrix_test, np.mean(matrix_test, axis=0).res
 print "mean: " + str(mean)
 print " "
 
+os.mkdir(out_dir)
+
 i = 0
 for eigenvector in eigenvectors:
-    np.save(os.path.join(out_dir, str(i) + ".npy"), eigenvector)
+    filename = "%05d.npy" % i
+    path = os.path.join(out_dir, filename)
+    np.save(path, eigenvector)
+#    print "Saved " + path
 #    print eigenvector
     evimg = eigenvector.reshape(imgraw.shape)
     print "min: " + str(evimg.min()) + ", max: " + str(evimg.max())
 #    evimg += evimg.min()
     evimg *= 255.0/evimg.max()
-    cv.imwrite(os.path.join(out_dir, str(i) + ".png"), evimg)
+#    cv.imwrite(os.path.join(out_dir, str(i) + ".png"), evimg)
     i = i + 1

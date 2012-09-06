@@ -5,11 +5,13 @@
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
-INCLUDEPATH += .
+INCLUDEPATH += . external/cnpy
 
 # Input
-HEADERS += MainWindow.h PCAPlayer.h
-SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp
+HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
+    PCA.h
+SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
+    PCA.cpp
 
 
 unix {

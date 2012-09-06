@@ -6,6 +6,9 @@
 #include <QStringList>
 #include <QImage>
 
+#include "PCA.h"
+
+
 PCAPlayer::PCAPlayer()
 {
 
@@ -13,11 +16,9 @@ PCAPlayer::PCAPlayer()
 
 void PCAPlayer::run()
 {
-    qDebug() << "hello from PCAPlayer thread";
-
+    // load original video
     QString videofilename = QApplication::instance()->arguments()[1];
     qDebug() << "Opening " << videofilename;
-
     CvCapture* capture = cvCaptureFromFile(videofilename.toStdString().c_str());
     cvQueryFrame(capture);
     int frameH    = (int) cvGetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT);
@@ -25,7 +26,10 @@ void PCAPlayer::run()
     int fps       = (int) cvGetCaptureProperty(capture, CV_CAP_PROP_FPS);
     int numFrames = (int) cvGetCaptureProperty(capture,  CV_CAP_PROP_FRAME_COUNT);
 
-    qDebug() << frameW << " x " << frameH;
+    // load PCA
+    QString pcaPath = QApplication::instance()->arguments()[2];
+    PCA pca(pcaPath);
+
 
     while(1)
     {
@@ -35,11 +39,13 @@ void PCAPlayer::run()
           //exit(0);
         }
         img = cvRetrieveFrame(capture);           // retrieve the captured frame
+        IplImage* scaledImg = cvCreateImage(cvSize(img->width, img->height), 8, 3);
+        //cv::resize(img, scaledImg, cv::Size(evImageWidth, evImageHeight), 0, 0, cv::INTER_CUBIC);
 
-        //uchar* data;
+        //cv::PCAProject(scaledImg, mean, eigenVectors, result);
+
         QImage newImage = this->IplImage2QImage(img);
         newFrame(newImage);
-        qDebug() << "emitted a newImage signal";
     }
 }
 

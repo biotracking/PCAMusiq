@@ -1,0 +1,3 @@
+[submodule "PCAMusiqPlayer/external/cnpy"]
+	path = PCAMusiqPlayer/external/cnpy
+	url = https://github.com/rogersce/cnpy.git
