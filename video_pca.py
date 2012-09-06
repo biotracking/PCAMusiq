@@ -9,7 +9,7 @@ in_path = sys.argv[1]
 
 files = os.listdir(in_path)
 stride = int(sys.argv[2])
-out_dir = os.path.abspath(in_path) + "_PCA"
+out_dir = os.path.abspath(in_path) + "_every-" + str(stride) + "_PCA"
 
 f = 0
 matrix_test = None
@@ -44,7 +44,8 @@ for eigenvector in eigenvectors:
     path = os.path.join(out_dir, filename)
     np.save(path, eigenvector)
 #    print "Saved " + path
-#    print eigenvector
+    print eigenvector
+    print "--------------------------"
     evimg = eigenvector.reshape(imgraw.shape)
     print "min: " + str(evimg.min()) + ", max: " + str(evimg.max())
 #    evimg += evimg.min()
