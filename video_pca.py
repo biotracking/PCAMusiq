@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import cv2 as cv
+import cv2
+import cv
 import sys
 import os
 import numpy as np
@@ -19,7 +20,7 @@ for image in files:
     f = f + 1
     if f % stride != 0:
         continue
-    imgraw = cv.imread(os.path.join(sys.argv[1], image), -1)
+    imgraw = cv2.imread(os.path.join(sys.argv[1], image), -1)
     imgvector = imgraw.reshape(imgraw.size)
     #print imgvector
     try:
@@ -31,7 +32,7 @@ print ""
 
 # PCA
 print "Running PCA ..."
-mean, eigenvectors = cv.PCACompute(matrix_test, np.mean(matrix_test, axis=0).reshape(1,-1))
+mean, eigenvectors = cv2.PCACompute(matrix_test, np.mean(matrix_test, axis=0).reshape(1,-1))
 
 print "mean: " + str(mean)
 print " "
@@ -40,9 +41,12 @@ os.mkdir(out_dir)
 
 i = 0
 for eigenvector in eigenvectors:
-    filename = "%05d.npy" % i
-    path = os.path.join(out_dir, filename)
-    np.save(path, eigenvector)
+    filename = "%05d" % i
+    path_no_extension = os.path.join(out_dir, filename)
+    npy_path = path_no_extension + ".npy"
+    cvxml_path = path_no_extension + ".xml"
+    np.save(npy_path, eigenvector)
+    #cv.Save(cvxml_path, eigenvector)
 #    print "Saved " + path
     print eigenvector
     print "--------------------------"
@@ -50,5 +54,5 @@ for eigenvector in eigenvectors:
     print "min: " + str(evimg.min()) + ", max: " + str(evimg.max())
 #    evimg += evimg.min()
     evimg *= 255.0/evimg.max()
-#    cv.imwrite(os.path.join(out_dir, str(i) + ".png"), evimg)
+#    cv2.imwrite(os.path.join(out_dir, str(i) + ".png"), evimg)
     i = i + 1

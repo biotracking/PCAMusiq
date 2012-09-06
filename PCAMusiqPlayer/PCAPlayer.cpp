@@ -39,10 +39,8 @@ void PCAPlayer::run()
           //exit(0);
         }
         img = cvRetrieveFrame(capture);           // retrieve the captured frame
-        IplImage* scaledImg = cvCreateImage(cvSize(img->width, img->height), 8, 3);
-        //cv::resize(img, scaledImg, cv::Size(evImageWidth, evImageHeight), 0, 0, cv::INTER_CUBIC);
 
-        //cv::PCAProject(scaledImg, mean, eigenVectors, result);
+
 
         QImage newImage = this->IplImage2QImage(img);
         newFrame(newImage);
