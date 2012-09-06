@@ -39,20 +39,25 @@ print " "
 
 os.mkdir(out_dir)
 
+mean_filepath = os.path.join(out_dir, "mean.npy")
+np.save(mean_filepath, mean)
+
+
 i = 0
 for eigenvector in eigenvectors:
     filename = "%05d" % i
     path_no_extension = os.path.join(out_dir, filename)
     npy_path = path_no_extension + ".npy"
     cvxml_path = path_no_extension + ".xml"
+    eigenvector = eigenvector.reshape(imgraw.shape)
     np.save(npy_path, eigenvector)
     #cv.Save(cvxml_path, eigenvector)
 #    print "Saved " + path
-    print eigenvector
-    print "--------------------------"
-    evimg = eigenvector.reshape(imgraw.shape)
-    print "min: " + str(evimg.min()) + ", max: " + str(evimg.max())
+#    print eigenvector
+#    print "--------------------------"
+#    print "min: " + str(evimg.min()) + ", max: " + str(evimg.max())
 #    evimg += evimg.min()
-    evimg *= 255.0/evimg.max()
+    evimg = eigenvector
+    evimg *= 255.0/eigenvector.max()
 #    cv2.imwrite(os.path.join(out_dir, str(i) + ".png"), evimg)
     i = i + 1

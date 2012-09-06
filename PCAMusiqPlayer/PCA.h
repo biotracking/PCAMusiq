@@ -12,10 +12,9 @@ class PCA
 public:
     PCA(QString path);
     ~PCA();
-    void project(IplImage* img);
+    std::vector<float> project(IplImage* img);
 
 private:
-    std::vector<cnpy::NpyArray> npArrays;
     cv::Mat eigenVectors;
 };
 

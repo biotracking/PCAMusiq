@@ -8,6 +8,7 @@
 
 #include "PCA.h"
 
+#define RELEVANT_COMPONENTS 12
 
 PCAPlayer::PCAPlayer()
 {
@@ -40,6 +41,7 @@ void PCAPlayer::run()
         }
         img = cvRetrieveFrame(capture);           // retrieve the captured frame
 
+        std::vector<float> pcaProjection = pca.project(img);
 
 
         QImage newImage = this->IplImage2QImage(img);

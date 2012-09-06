@@ -13,7 +13,6 @@ HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
 SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     PCA.cpp
 
-
 unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += opencv

@@ -1,3 +1,6 @@
 [submodule "PCAMusiqPlayer/external/cnpy"]
 	path = PCAMusiqPlayer/external/cnpy
 	url = https://github.com/rogersce/cnpy.git
+[submodule "PCAMusiqPlayer/external/qjson"]
+	path = PCAMusiqPlayer/external/qjson
+	url = git://gitorious.org/qjson/qjson.git
