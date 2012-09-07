@@ -60,14 +60,6 @@ PCA::PCA(QString path)
         cv::Mat eigenVector = cv::Mat(1, componentCount(eigenVectorImage), CV_MAT32F, eigenVectorImage.data);
         qDebug() << "eigenVector is " << eigenVector.rows << " x " << eigenVector.cols;
 
-        //if(!initializedEigenVectorMatrix)
-        //{
-        //    eigenVectors = cv::Mat(eigenVectorFilenames.size(), eigenVector.cols, CV_MAT32F); // does this need a 3-channel type?
-        //    qDebug() << "Made EV matrix of size " << eigenVectorFilenames.size() << " x " << eigenVector.cols;
-        //    initializedEigenVectorMatrix = true;
-       // }
-
-        //eigenVectors.row(v) = eigenVector.row(0);
         eigenVectors.push_back(eigenVector.row(0));
 
     }
