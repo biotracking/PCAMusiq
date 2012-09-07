@@ -16,6 +16,10 @@ public:
 
 private:
     cv::Mat eigenVectors;
+    cv::Mat mean;
+
+    int evImageWidth;
+    int evImageHeight;
 };
 
 #endif // PCA_H

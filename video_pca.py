@@ -34,6 +34,7 @@ print ""
 print "Running PCA ..."
 mean, eigenvectors = cv2.PCACompute(matrix_test, np.mean(matrix_test, axis=0).reshape(1,-1))
 
+mean = mean.reshape(imgraw.shape)
 print "mean: " + str(mean)
 print " "
 
@@ -42,6 +43,9 @@ os.mkdir(out_dir)
 mean_filepath = os.path.join(out_dir, "mean.npy")
 np.save(mean_filepath, mean)
 
+meanimg = mean
+#meanimg *= 255.0/mean.max()
+cv2.imwrite(os.path.join(out_dir, "mean.png"), meanimg)
 
 i = 0
 for eigenvector in eigenvectors:
@@ -59,5 +63,5 @@ for eigenvector in eigenvectors:
 #    evimg += evimg.min()
     evimg = eigenvector
     evimg *= 255.0/eigenvector.max()
-#    cv2.imwrite(os.path.join(out_dir, str(i) + ".png"), evimg)
+    cv2.imwrite(os.path.join(out_dir, str(i) + ".png"), evimg)
     i = i + 1

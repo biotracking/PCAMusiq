@@ -17,3 +17,5 @@ unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += opencv
 }
+
+QT += opengl
