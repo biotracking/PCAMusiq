@@ -41,11 +41,23 @@ cv::Mat vectorizeMat32f(cv::Mat m)
     return cv::Mat(1, componentCount(m), CV_MAT32F, m.data);
 }
 
-
+cv::Mat vectorizeMat888(cv::Mat m)
+{
+    unsigned int values = 3 * componentCount(m);
+    //qDebug() << "vectorizeMat888 values: " << values;
+    cv::Mat vector = cvCreateMat(1, values, CV_MAT32F);
+    unsigned char* mData = (unsigned char*) m.data;
+    float* vData = (float*) vector.data;
+    for(unsigned int i = 0; i < values; i++)
+    {
+        vData[i] = float(mData[i]);
+    }
+    return vector;
+}
 
 PCA::PCA(QString path)
 {
-    qDebug() << "PCA's gonna open " << path;
+    //qDebug() << "PCA's gonna open " << path;
     QDir pcaDir(path);
     QStringList npyFilePaths = pcaDir.entryList(QStringList("*.npy"));
     QStringList eigenVectorFilenames;
@@ -59,7 +71,7 @@ PCA::PCA(QString path)
             mean = npyFile2cvMat((path + "/" + filename).toStdString());
             evImageWidth = mean.size[1];
             evImageHeight = mean.size[0];
-            qDebug() << "inferred ev size: " << evImageWidth << ", " << evImageHeight;
+            //qDebug() << "inferred ev size: " << evImageWidth << ", " << evImageHeight;
 
             mean = vectorizeMat32f(mean);
         }
@@ -92,18 +104,42 @@ PCA::PCA(QString path)
 
 std::vector<float> PCA::project(IplImage* img)
 {
-/*
-    IplImage* scaledImg = cvCreateImage(cvSize(img->width, img->height), 8, 3);
-    cv::resize(img, scaledImg, cv::Size(evImageWidth, evImageHeight), 0, 0, cv::INTER_CUBIC);
 
-    cv::OutputArray coefficients;
-    cv::PCAProject(scaledImg, mean, eigenVectors, coefficients);*/
+    //qDebug() << "img " << img->width << ", " << img->height << ", " << img->depth << ", " << img->nChannels;
+
+    //cv::Mat scaledImg = cvCreateImage(cvSize(img->width, img->height), 8, 3);
+    cv::Mat imgMat(img);
+
+    //qDebug() << "imgMat dims: " << imgMat.dims;
+
+    cv::Mat scaledImgMat;
+    cv::resize(imgMat, scaledImgMat, cv::Size(evImageWidth, evImageHeight), 0, 0, cv::INTER_CUBIC);
+
+    //qDebug() << "scaledImgMat: " << scaledImgMat.rows << " x " << scaledImgMat.cols << ", " << scaledImgMat.elemSize();
+    cv::Mat imageVector = vectorizeMat888(scaledImgMat);
+
+    cv::Mat coefficients;
+
+    //qDebug() << eigenVectors.rows << ", " << eigenVectors.cols;
+    //qDebug() << "imageVector" << imageVector.dims << ", " << componentCount(imageVector) << ", " << imageVector.type();
+    //qDebug() << mean.dims << ", " << componentCount(mean);
+
+    //qDebug() << "mean.data: " << mean.data;
+    //qDebug() << "eigenvectors.data" << eigenVectors.data;
+    //qDebug() << "mean.rows: " << mean.rows << ", mean.cols" << mean.cols;
+    //qDebug() << "data.rows: " << imageVector.rows << ", data.cols" << imageVector.cols;
+    //qDebug() << "(mean.rows == 1 && mean.cols == data.cols)" << (mean.rows == 1 && mean.cols == imageVector.cols);
+    //qDebug() << "(mean.cols == 1 && mean.rows == data.rows)" << (mean.cols == 1 && mean.rows == imageVector.rows);
+
+    cv::PCAProject(imageVector, mean, eigenVectors, coefficients);
 
     std::vector<float> result(20);
     for(int c = 0; c < result.size(); c++)
     {
-        result[c] = (float)rand()/(float)RAND_MAX;
+        result[c] = ((float*)coefficients.data)[c];
+        std::cerr << result[c];
     }
+    std::cerr << std::endl;
     return result;
 }
 
