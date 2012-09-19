@@ -29,7 +29,7 @@ void MainWindow::newVideoFrame(QImage frame)
     //qDebug() << "received video frame " << frame.width() << " x " << frame.height();
     //image.setPixmap(QPixmap::fromImage(frame));
     videoPixmap.setPixmap(QPixmap::fromImage(frame));
-    //graphicsView.fitInView(&videoPixmap, Qt::KeepAspectRatio);
+    graphicsView.fitInView(&videoPixmap, Qt::KeepAspectRatio);
     //image.show();
 }
 

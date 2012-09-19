@@ -2,6 +2,7 @@
 #define PCA_H
 
 #include <QString>
+#include <QMutex>
 
 #include <opencv/cv.h>
 
@@ -20,6 +21,8 @@ private:
 
     int evImageWidth;
     int evImageHeight;
+
+    QMutex outputMutex;
 };
 
 #endif // PCA_H

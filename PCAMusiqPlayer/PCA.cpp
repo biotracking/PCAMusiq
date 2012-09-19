@@ -133,13 +133,19 @@ std::vector<float> PCA::project(IplImage* img)
 
     cv::PCAProject(imageVector, mean, eigenVectors, coefficients);
 
-    std::vector<float> result(20);
+    static int frame = 0;
+
+    //outputMutex.lock();
+    std::cout << frame++ << ", ";
+
+    std::vector<float> result(12);
     for(int c = 0; c < result.size(); c++)
     {
         result[c] = ((float*)coefficients.data)[c];
-        std::cerr << result[c];
+        std::cout << result[c] << ", ";
     }
-    std::cerr << std::endl;
+    std::cout << std::endl;
+    //outputMutex.unlock();
     return result;
 }
 
