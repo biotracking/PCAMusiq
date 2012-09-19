@@ -18,18 +18,15 @@ public:
     std::vector<float> project(IplImage* img);
     cv::Mat backProject(std::vector<float> vector);
 
+    int getEVImageWidth() { return evImageWidth; }
+    int getEVImageHeight() { return evImageHeight; }
 
 private:
-    cv::Mat eigenVectors;
-    cv::Mat mean;
-
     int evImageWidth;
     int evImageHeight;
 
     cv::PCA cvPCA;
     cv::Mat backProjection;
-
-    //QMutex outputMutex;
 };
 
 #endif // PCA_H

@@ -66,14 +66,13 @@ PCA::PCA(QString path)
             eigenVectorFilenames.append(filename);
         else
         {
-            mean = npyFile2cvMat((path + "/" + filename).toStdString());
-            evImageWidth = mean.size[1];
-            evImageHeight = mean.size[0];
+            cvPCA.mean = npyFile2cvMat((path + "/" + filename).toStdString());
+            evImageWidth = cvPCA.mean.size[1];
+            evImageHeight = cvPCA.mean.size[0];
 
-            mean = vectorizeMat32f(mean);
-            cvPCA.mean = mean;
+            cvPCA.mean = vectorizeMat32f(cvPCA.mean);
 
-            backProjection.copySize(mean);
+            backProjection.copySize(cvPCA.mean);
         }
     }
 
@@ -84,10 +83,8 @@ PCA::PCA(QString path)
         cv::Mat eigenVectorImage = npyFile2cvMat(fullPath.toStdString());
         cv::Mat eigenVector = vectorizeMat32f(eigenVectorImage);
 
-        eigenVectors.push_back(eigenVector.row(0));
+        cvPCA.eigenvectors.push_back(eigenVector.row(0));
     }
-
-    cvPCA.eigenvectors = eigenVectors;
 }
 
 std::vector<float> PCA::project(IplImage* img)
@@ -101,7 +98,7 @@ std::vector<float> PCA::project(IplImage* img)
 
     cv::Mat coefficients;
 
-    cv::PCAProject(imageVector, mean, eigenVectors, coefficients);
+    cvPCA.project(imageVector, coefficients);
 
     static int frame = 0;
 

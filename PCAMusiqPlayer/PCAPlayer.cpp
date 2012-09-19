@@ -51,13 +51,52 @@ void PCAPlayer::run()
         QImage newImage = this->IplImage2QImage(img);
         QImage reconstructedImage = this->IplImage2QImage(reconstructImage(coefficients));
         newFrame(newImage);
-        newReconstructedFrame(reconstructedImage);
+        newReconstructedFrame(cvMat2QImage(pca.backProject(pcaProjection), pca.getEVImageWidth(), pca.getEVImageHeight()));
     }
 }
 
 IplImage* PCAPlayer::reconstructImage(TimeSeriesSamples coefficients)
 {
 
+}
+
+QImage PCAPlayer::cvMat2QImage(cv::Mat m, int width, int height)
+{
+    QImage image = QImage(width, height, QImage::Format_RGB888);
+    QImage* qtImage = &image;
+
+    // Assume matrix has 3 channels interleaved (RGB)
+
+    //int channels = iplImage->nChannels;
+    uchar *data = m.data;
+    char r, g, b, a = 0;
+
+    /*for (int y=0; y < qtImage->height(); y++)
+
+            for (int x=0; x < qtImage->width(); x++, data += 1 * width * 3) {
+
+                    b = data[x * 3 + 0];
+                    g = data[x * 3 + 1];
+                    r = data[x * 3 + 2];
+
+                    qtImage->setPixel(x, y, qRgb(r,g,b));
+
+            }*/
+
+    for(int x = 0; x < width; x++)
+    {
+        for(int y = 0; y < height; y++)
+        {
+            int pixelIndex = y * width + x;
+            float b = m.at<float>(pixelIndex * 3 + 0);
+            float g = m.at<float>(pixelIndex * 3 + 1);
+            float r = m.at<float>(pixelIndex * 3 + 2);
+
+            image.setPixel(x, y, qRgb(r,g,b));
+        }
+    }
+
+    return image;
 }
 
 QImage PCAPlayer::IplImage2QImage(IplImage *iplImage) {
