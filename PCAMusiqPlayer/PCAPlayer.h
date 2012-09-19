@@ -18,6 +18,7 @@ public:
 
 signals:
     void newFrame(QImage frame);
+    void newReconstructedFrame(QImage reconstructedFrame);
     void newCoefficients(TimeSeriesSamples coefficients);
 
 public:
@@ -26,6 +27,7 @@ public:
 
 private:
     QImage IplImage2QImage(IplImage *iplImage);
+    IplImage* reconstructImage(TimeSeriesSamples coefficients);
 };
 
 #endif // PCAPLAYER_H

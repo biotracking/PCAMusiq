@@ -16,7 +16,7 @@ public:
     PCA(QString path);
     ~PCA();
     std::vector<float> project(IplImage* img);
-
+    cv::Mat backProject(std::vector<float> vector);
 
 
 private:
@@ -26,7 +26,10 @@ private:
     int evImageWidth;
     int evImageHeight;
 
-    QMutex outputMutex;
+    cv::PCA cvPCA;
+    cv::Mat backProjection;
+
+    //QMutex outputMutex;
 };
 
 #endif // PCA_H

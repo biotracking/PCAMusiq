@@ -49,8 +49,15 @@ void PCAPlayer::run()
 
 
         QImage newImage = this->IplImage2QImage(img);
+        QImage reconstructedImage = this->IplImage2QImage(reconstructImage(coefficients));
         newFrame(newImage);
+        newReconstructedFrame(reconstructedImage);
     }
+}
+
+IplImage* PCAPlayer::reconstructImage(TimeSeriesSamples coefficients)
+{
+
 }
 
 QImage PCAPlayer::IplImage2QImage(IplImage *iplImage) {

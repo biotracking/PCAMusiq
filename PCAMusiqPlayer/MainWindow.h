@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow
     QGraphicsView graphicsView;
 
     QGraphicsPixmapItem videoPixmap;
+    QGraphicsPixmapItem reconstructedPixmap;
     QGraphicsItemGroup coefficientsPlot;
     std::vector<TimeSeries*> coefficientTimeSeries;
 
@@ -27,6 +28,7 @@ class MainWindow : public QMainWindow
 
 public slots:
     void newVideoFrame(QImage frame);
+    void newReconstructedFrame(QImage frame);
     void newCoefficients(TimeSeriesSamples coefficients);
 
 public:

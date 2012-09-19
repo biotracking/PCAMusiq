@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     QObject::connect(&player, SIGNAL(newFrame(QImage)),
                         this, SLOT(newVideoFrame(QImage)));
+    QObject::connect(&player, SIGNAL(newReconstructedFrame(QImage)),
+                        this, SLOT(newReconstructedFrame(QImage)));
     QObject::connect(&player, SIGNAL(newCoefficients(TimeSeriesSamples)),
                         this, SLOT(newCoefficients(TimeSeriesSamples)),
                      Qt::DirectConnection);
@@ -38,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     scene.addItem(&videoPixmap);
+    scene.addItem(&reconstructedPixmap);
+
     //coefficientsPlot.setPos(1500.0, 0.0);
     coefficientsPlot.setZValue(10);
     scene.addItem(&coefficientsPlot);
@@ -60,16 +64,16 @@ void MainWindow::newCoefficients(TimeSeriesSamples coefficients)
 
 void MainWindow::newVideoFrame(QImage frame)
 {
-
-
-    //qDebug() << "received video frame " << frame.width() << " x " << frame.height();
-    //image.setPixmap(QPixmap::fromImage(frame));
     videoPixmap.setPixmap(QPixmap::fromImage(frame));
     coefficientsPlot.setPos(frame.width(), 0.0);
     graphicsView.fitInView(scene.sceneRect(), Qt::KeepAspectRatio);
 
+    reconstructedPixmap.setPos(0.0, frame.height());
+}
 
-    //image.show();
+void MainWindow::newReconstructedFrame(QImage frame)
+{
+    reconstructedPixmap.setPixmap(QPixmap::fromImage(frame));
 }
 
 MainWindow::~MainWindow()
