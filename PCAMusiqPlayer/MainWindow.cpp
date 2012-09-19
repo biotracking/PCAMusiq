@@ -17,18 +17,21 @@ MainWindow::MainWindow(QWidget *parent)
                         this, SLOT(newCoefficients(TimeSeriesSamples)),
                      Qt::DirectConnection);
 
+    float nextY = 0.0;
     for(int p = 0; p < RELEVANT_COMPONENTS; p++)
     {
         TimeSeries* ts = new TimeSeries();
         //QGraphicsPathItem* plot = new QGraphicsPathItem(&coefficientsPlot);
         coefficientTimeSeries.push_back(ts);
         coefficientsPlot.addToGroup(ts);
+        ts->setPos(0.0, nextY);
+        nextY += ts->boundingRect().height();
 
         //QPainterPath path(QPointF(0.0, 0.0));
         //path.lineTo(100.0, 100.0);
 
 
-        //plot->setBrush(QBrush(QColor(230, 50, 50)));
+        //plot->setBrush(QBrush(QColor(230, 50, 50
         //plot->setPath(path);
     }
 

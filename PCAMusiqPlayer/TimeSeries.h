@@ -21,6 +21,8 @@ public:
 //    void append(float value);
 private:
     TimeSeriesSamples values;
+    float max;
+    float min;
 };
 
 #endif // TIMESERIES_H
