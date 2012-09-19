@@ -11,7 +11,8 @@ INCLUDEPATH += . external/cnpy
 HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
     PCA.h \
     TimeSeries.h \
-    Config.h
+    Config.h \
+    MathUtil.h
 SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     PCA.cpp \
     TimeSeries.cpp

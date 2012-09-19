@@ -15,7 +15,7 @@ cv::Mat npyFile2cvMat(std::string path)
     float* data = reinterpret_cast<float*>(array.data);
 
     int* sizes = new int[array.shape.size()];
-    for(int d = 0; d < array.shape.size(); d++)
+    for(size_t d = 0; d < array.shape.size(); d++)
     {
         sizes[d] = array.shape[d];
 
@@ -104,13 +104,13 @@ std::vector<float> PCA::project(IplImage* img)
 
     std::cout << frame++ << ", ";
 
-    std::vector<float> result(12);
-    for(int c = 0; c < result.size(); c++)
+    std::vector<float> result(RELEVANT_COMPONENTS);
+    for(size_t c = 0; c < result.size(); c++)
     {
         result[c] = ((float*)coefficients.data)[c];
-        std::cout << result[c] << ", ";
+        //std::cout << result[c] << ", ";
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
 
     return result;
 }

@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     for(int p = 0; p < RELEVANT_COMPONENTS; p++)
     {
         TimeSeries* ts = new TimeSeries();
+
         //QGraphicsPathItem* plot = new QGraphicsPathItem(&coefficientsPlot);
         coefficientTimeSeries.push_back(ts);
         coefficientsPlot.addToGroup(ts);
@@ -44,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //coefficientsPlot.setPos(1500.0, 0.0);
     coefficientsPlot.setZValue(10);
+    coefficientsPlot.setScale(1);
     scene.addItem(&coefficientsPlot);
 
 
@@ -65,7 +67,7 @@ void MainWindow::newCoefficients(TimeSeriesSamples coefficients)
 void MainWindow::newVideoFrame(QImage frame)
 {
     videoPixmap.setPixmap(QPixmap::fromImage(frame));
-    coefficientsPlot.setPos(frame.width(), 0.0);
+    coefficientsPlot.setPos(-coefficientsPlot.boundingRect().width(), 0.0);
     graphicsView.fitInView(scene.sceneRect(), Qt::KeepAspectRatio);
 
     reconstructedPixmap.setPos(0.0, frame.height());
@@ -74,6 +76,7 @@ void MainWindow::newVideoFrame(QImage frame)
 void MainWindow::newReconstructedFrame(QImage frame)
 {
     reconstructedPixmap.setPixmap(QPixmap::fromImage(frame));
+    reconstructedPixmap.setScale(videoPixmap.boundingRect().width() / frame.width());
 }
 
 MainWindow::~MainWindow()

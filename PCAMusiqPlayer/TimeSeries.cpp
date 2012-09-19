@@ -4,8 +4,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
-#define MAX(a, b) (a < b ? b : a)
-#define MIN(a, b) (a > b ? b : a)
+#include "MathUtil.h"
 
 TimeSeries::TimeSeries()
 {

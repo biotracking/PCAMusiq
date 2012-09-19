@@ -28,8 +28,6 @@ public:
 private:
     QImage IplImage2QImage(IplImage *iplImage);
     QImage cvMat2QImage(cv::Mat m, int width, int height);
-
-    IplImage* reconstructImage(TimeSeriesSamples coefficients);
 };
 
 #endif // PCAPLAYER_H

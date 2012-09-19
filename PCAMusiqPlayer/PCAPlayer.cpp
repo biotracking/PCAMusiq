@@ -7,8 +7,9 @@
 #include <QImage>
 
 #include "PCA.h"
-
 #include "Config.h"
+#include "MathUtil.h"
+
 
 PCAPlayer::PCAPlayer()
 {
@@ -22,10 +23,6 @@ void PCAPlayer::run()
     qDebug() << "Opening " << videofilename;
     CvCapture* capture = cvCaptureFromFile(videofilename.toStdString().c_str());
     cvQueryFrame(capture);
-    int frameH    = (int) cvGetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT);
-    int frameW    = (int) cvGetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH);
-    int fps       = (int) cvGetCaptureProperty(capture, CV_CAP_PROP_FPS);
-    int numFrames = (int) cvGetCaptureProperty(capture,  CV_CAP_PROP_FRAME_COUNT);
 
     // load PCA
     QString pcaPath = QApplication::instance()->arguments()[2];
@@ -43,45 +40,20 @@ void PCAPlayer::run()
 
         std::vector<float> pcaProjection = pca.project(img);
         QVector<float> coefficients(pcaProjection.size());
-        for(int c = 0; c < pcaProjection.size(); c++)
+        for(size_t c = 0; c < pcaProjection.size(); c++)
             coefficients[c] = pcaProjection[c];
         newCoefficients(coefficients);
 
 
         QImage newImage = this->IplImage2QImage(img);
-        QImage reconstructedImage = this->IplImage2QImage(reconstructImage(coefficients));
         newFrame(newImage);
         newReconstructedFrame(cvMat2QImage(pca.backProject(pcaProjection), pca.getEVImageWidth(), pca.getEVImageHeight()));
     }
 }
 
-IplImage* PCAPlayer::reconstructImage(TimeSeriesSamples coefficients)
-{
-
-}
-
 QImage PCAPlayer::cvMat2QImage(cv::Mat m, int width, int height)
 {
     QImage image = QImage(width, height, QImage::Format_RGB888);
-    QImage* qtImage = &image;
-
-    // Assume matrix has 3 channels interleaved (RGB)
-
-    //int channels = iplImage->nChannels;
-    uchar *data = m.data;
-    char r, g, b, a = 0;
-
-    /*for (int y=0; y < qtImage->height(); y++)
-
-            for (int x=0; x < qtImage->width(); x++, data += 1 * width * 3) {
-
-                    b = data[x * 3 + 0];
-                    g = data[x * 3 + 1];
-                    r = data[x * 3 + 2];
-
-                    qtImage->setPixel(x, y, qRgb(r,g,b));
-
-            }*/
 
     for(int x = 0; x < width; x++)
     {
@@ -91,6 +63,11 @@ QImage PCAPlayer::cvMat2QImage(cv::Mat m, int width, int height)
             float b = m.at<float>(pixelIndex * 3 + 0);
             float g = m.at<float>(pixelIndex * 3 + 1);
             float r = m.at<float>(pixelIndex * 3 + 2);
+
+            // getting some r, g, b's outside 0.0 to 255.0 (surely because of the information loss from PCA)
+            //r = CLAMP(r, 0.0, 255.0);
+            //g = CLAMP(g, 0.0, 255.0);
+            //b = CLAMP(b, 0.0, 255.0);
 
             image.setPixel(x, y, qRgb(r,g,b));
         }
@@ -110,7 +87,7 @@ QImage PCAPlayer::IplImage2QImage(IplImage *iplImage) {
 
         //int channels = iplImage->nChannels;
         char *data = iplImage->imageData;
-        char r, g, b, a = 0;
+        char r, g, b;
 
         for (int y=0; y < qtImage->height(); y++, data += iplImage->widthStep)
 
