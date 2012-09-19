@@ -10,10 +10,14 @@
 
 class PCA
 {
+    //Q_OBJECT
+
 public:
     PCA(QString path);
     ~PCA();
     std::vector<float> project(IplImage* img);
+
+
 
 private:
     cv::Mat eigenVectors;

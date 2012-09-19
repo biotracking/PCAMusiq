@@ -145,6 +145,9 @@ std::vector<float> PCA::project(IplImage* img)
         std::cout << result[c] << ", ";
     }
     std::cout << std::endl;
+
+
+
     //outputMutex.unlock();
     return result;
 }

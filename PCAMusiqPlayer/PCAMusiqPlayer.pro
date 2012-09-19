@@ -9,9 +9,12 @@ INCLUDEPATH += . external/cnpy
 
 # Input
 HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
-    PCA.h
+    PCA.h \
+    TimeSeries.h \
+    Config.h
 SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
-    PCA.cpp
+    PCA.cpp \
+    TimeSeries.cpp
 
 unix {
     CONFIG += link_pkgconfig
@@ -19,3 +22,5 @@ unix {
 }
 
 QT += opengl
+
+OTHER_FILES +=

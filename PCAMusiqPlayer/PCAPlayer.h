@@ -8,6 +8,8 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
+#include "TimeSeries.h"
+
 class PCAPlayer : public QThread
 {
     Q_OBJECT
@@ -16,6 +18,7 @@ public:
 
 signals:
     void newFrame(QImage frame);
+    void newCoefficients(TimeSeriesSamples coefficients);
 
 public:
     PCAPlayer();

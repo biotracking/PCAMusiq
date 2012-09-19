@@ -8,7 +8,7 @@
 
 #include "PCA.h"
 
-#define RELEVANT_COMPONENTS 12
+#include "Config.h"
 
 PCAPlayer::PCAPlayer()
 {
@@ -42,6 +42,10 @@ void PCAPlayer::run()
         img = cvRetrieveFrame(capture);           // retrieve the captured frame
 
         std::vector<float> pcaProjection = pca.project(img);
+        QVector<float> coefficients(pcaProjection.size());
+        for(int c = 0; c < pcaProjection.size(); c++)
+            coefficients[c] = pcaProjection[c];
+        newCoefficients(coefficients);
 
 
         QImage newImage = this->IplImage2QImage(img);
