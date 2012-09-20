@@ -45,8 +45,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     //coefficientsPlot.setPos(1500.0, 0.0);
     coefficientsPlot.setZValue(10);
-    coefficientsPlot.setScale(1);
+    //coefficientsPlot.setScale(0.5);
     scene.addItem(&coefficientsPlot);
+
+    QString labelString;
+    for (int a = 0; a < QApplication::instance()->arguments().size(); a++)
+    {
+        labelString = labelString + QApplication::instance()->arguments()[a] + "\n";
+    }
+    labelString.truncate(labelString.size()-1);
+    QGraphicsTextItem* label = new QGraphicsTextItem(labelString);
+    QFont font = label->font();
+    font.setPointSizeF(30);
+    label->setFont(font);
+    label->setPos(- label->boundingRect().width() / 2.0, -label->boundingRect().height());
+    scene.addItem(label);
 
 
     graphicsView.resize(1024, 768);
@@ -67,8 +80,20 @@ void MainWindow::newCoefficients(TimeSeriesSamples coefficients)
 void MainWindow::newVideoFrame(QImage frame)
 {
     videoPixmap.setPixmap(QPixmap::fromImage(frame));
-    coefficientsPlot.setPos(-coefficientsPlot.boundingRect().width(), 0.0);
+
+    //float timeSeriesScale = 2 * frame.height() / (coefficientTimeSeries.size() * coefficientTimeSeries[0]->boundingRect().height());
+    float singlePlotHeight = 2 * frame.height() / RELEVANT_COMPONENTS;
+    for(int p = 0; p < coefficientTimeSeries.size(); p++)
+    {
+        TimeSeries* ts = coefficientTimeSeries[p];
+        QRectF tsRect(- PLOT_WIDTH, 0.0, PLOT_WIDTH, singlePlotHeight);
+        ts->setBoundingRect(tsRect);
+        ts->setPos(- PLOT_WIDTH, singlePlotHeight * p);
+        //coefficientsPlot.setPos( coefficientsPlot.boundingRect().width(), p * );
+    }
+    //coefficientsPlot.setScale(timeSeriesScale);
     graphicsView.fitInView(scene.sceneRect(), Qt::KeepAspectRatio);
+    qDebug() << scene.sceneRect().height();
 
     reconstructedPixmap.setPos(0.0, frame.height());
 }
