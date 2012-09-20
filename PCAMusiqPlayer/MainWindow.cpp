@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 
 #include <QApplication>
+#include <QFileInfo>
 #include <QDebug>
 #include <QtOpenGL/QGLWidget>
 
@@ -51,20 +52,22 @@ MainWindow::MainWindow(QWidget *parent)
     QString labelString;
     for (int a = 0; a < QApplication::instance()->arguments().size(); a++)
     {
-        labelString = labelString + QApplication::instance()->arguments()[a] + "\n";
+        QFileInfo info(QApplication::instance()->arguments()[a]);
+        labelString = labelString + info.fileName() + ", ";
     }
-    labelString.truncate(labelString.size()-1);
-    QGraphicsTextItem* label = new QGraphicsTextItem(labelString);
-    QFont font = label->font();
-    font.setPointSizeF(30);
-    label->setFont(font);
-    label->setPos(- label->boundingRect().width() / 2.0, -label->boundingRect().height());
-    scene.addItem(label);
+    labelString.truncate(labelString.size()-2);
+    //QGraphicsTextItem* label = new QGraphicsTextItem(labelString);
+    //QFont font = label->font();
+    //font.setPointSizeF(30);
+    //label->setFont(font);
+    //label->setPos(- label->boundingRect().width() / 2.0, -label->boundingRect().height());
+    //scene.addItem(label);
 
 
     graphicsView.resize(1024, 768);
     graphicsView.setViewport(new QGLWidget());
     graphicsView.show();
+    graphicsView.window()->setWindowTitle(labelString);
     player.start();
 }
 
@@ -86,14 +89,14 @@ void MainWindow::newVideoFrame(QImage frame)
     for(int p = 0; p < coefficientTimeSeries.size(); p++)
     {
         TimeSeries* ts = coefficientTimeSeries[p];
-        QRectF tsRect(- PLOT_WIDTH, 0.0, PLOT_WIDTH, singlePlotHeight);
+        QRectF tsRect(/*- PLOT_WIDTH*/ 0.0, 0.0, PLOT_WIDTH, singlePlotHeight);
         ts->setBoundingRect(tsRect);
         ts->setPos(- PLOT_WIDTH, singlePlotHeight * p);
         //coefficientsPlot.setPos( coefficientsPlot.boundingRect().width(), p * );
     }
     //coefficientsPlot.setScale(timeSeriesScale);
     graphicsView.fitInView(scene.sceneRect(), Qt::KeepAspectRatio);
-    qDebug() << scene.sceneRect().height();
+
 
     reconstructedPixmap.setPos(0.0, frame.height());
 }
