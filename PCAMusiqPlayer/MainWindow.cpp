@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     //scene.addItem(label);
 
 
-    graphicsView.resize(1024, 768);
+    graphicsView.resize(1280, 900);
     graphicsView.setViewport(new QGLWidget());
     graphicsView.show();
     graphicsView.window()->setWindowTitle(labelString);

@@ -1,14 +1,76 @@
 #!/usr/bin/env python
 
 import argparse
-import sys
 import os
 import dpy
 import shutil
 
 
-#import dpy
+def pca_image_dir(args):
+   import sys
+   import cv2
+   import cv
+   import numpy as np
 
+   in_path = args.images_directory
+   stride = args.stride
+
+   files = os.listdir(in_path)
+   out_dir = os.path.abspath(in_path) + "_every-" + str(stride) + "_PCA"
+
+   f = 0
+   matrix_test = None
+   imgraw = None
+   print " "
+   for image in files:
+       f = f + 1
+       if f % stride != 0:
+	   continue
+       imgraw = cv2.imread(os.path.join(in_path, image), -1)
+       imgvector = imgraw.reshape(imgraw.size)
+       #print imgvector
+       try:
+	   matrix_test = np.vstack((matrix_test, imgvector))
+       except:
+	   matrix_test = imgvector
+       sys.stderr.write( str(f) + " of " + str(len(files)) + "\r" )
+   print ""
+
+   # PCA
+   print "Running PCA ..."
+   mean, eigenvectors = cv2.PCACompute(matrix_test, np.mean(matrix_test, axis=0).reshape(1,-1))
+
+   mean = mean.reshape(imgraw.shape)
+   print "mean: " + str(mean)
+   print " "
+
+   os.mkdir(out_dir)
+
+   mean_filepath = os.path.join(out_dir, "mean.npy")
+   np.save(mean_filepath, mean)
+
+   meanimg = mean
+   #meanimg *= 255.0/mean.max()
+   cv2.imwrite(os.path.join(out_dir, "mean.png"), meanimg)
+
+   i = 0
+   for eigenvector in eigenvectors:
+       filename = "%05d" % i
+       path_no_extension = os.path.join(out_dir, filename)
+       npy_path = path_no_extension + ".npy"
+       cvxml_path = path_no_extension + ".xml"
+       eigenvector = eigenvector.reshape(imgraw.shape)
+       np.save(npy_path, eigenvector)
+       #cv.Save(cvxml_path, eigenvector)
+   #    print "Saved " + path
+   #    print eigenvector
+   #    print "--------------------------"
+   #    print "min: " + str(evimg.min()) + ", max: " + str(evimg.max())
+   #    evimg += evimg.min()
+       evimg = eigenvector
+       evimg *= 255.0/eigenvector.max()
+       cv2.imwrite(os.path.join(out_dir, str(i) + ".png"), evimg)
+       i = i + 1
 
 def _make_random_basis(args):
   import numpy as np
@@ -80,6 +142,18 @@ make_random_basis.add_argument('mean', type=str)
 make_random_basis.add_argument('scale', type=float)
 make_random_basis.add_argument('input_directory', type=str)
 make_random_basis.set_defaults(func=_make_random_basis)
+
+# do pca of images
+pca_command = subparsers.add_parser('pca')
+pca_command.set_defaults(func=pca_image_dir)
+pca_command.add_argument('images_directory', type=str,
+                         help='Directory containing input images')
+pca_command.add_argument('--target-mean', type=str,
+                         help='crop and resize images to fit (NumPy array) TARGET_MEAN\'s shape')
+pca_command.add_argument('--stride', type=int, default=1,
+                         help='use 1 out of every STRIDE images')
+pca_command.add_argument('--scale', type=float, default=1.0,
+                         help='Scale images by SCALE')
 
 # plot photos
 """
