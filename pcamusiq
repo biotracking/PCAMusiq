@@ -1,0 +1,94 @@
+#!/usr/bin/env python
+
+import argparse
+import sys
+import os
+import dpy
+import shutil
+
+
+#import dpy
+
+
+def _make_random_basis(args):
+  import numpy as np
+  from scipy.misc import imread, imresize, imshow
+  #from skimage.io import imread
+  
+  #import enzyme
+  #video_meta = enzyme.parse(args.video_to_reconstruct)
+  #target_width = int(args.scale * video_meta.video[0].width)
+  #target_height = int(args.scale * video_meta.video[0].height)
+  
+  mean = np.load(args.mean)
+  target_width = int(args.scale * mean.shape[1])
+  target_height = int(args.scale * mean.shape[0])
+  
+  print str(target_width) + " x " + str(target_height) + " each..."
+
+  array_out_directory = args.input_directory + "_PCA"
+  dpy.ensure_dir(array_out_directory)
+
+  shutil.copy(args.mean, os.path.join(array_out_directory, "mean.npy"))
+
+  index = 0
+  image_names = sorted(os.listdir(args.input_directory))
+  for image_name in image_names:
+    image_path = os.path.join(args.input_directory, image_name)
+    image = imread(image_path)
+   
+    
+
+    image_width = image.shape[1]
+    image_height = image.shape[0]
+    image_aspect = float(image_width) / float(image_height)
+
+    resized_width = target_width
+    resized_height = int(target_width / image_aspect)
+    if resized_height < target_height:
+      scale = float(target_height) / float(resized_height)
+      resized_width = int(scale * resized_width)
+      resized_height = target_height
+    image = imresize(image, (resized_height, resized_width))
+    
+    left = image.shape[1] / 2 - target_width / 2
+    top = image.shape[0] / 2 - target_height / 2
+
+    #print image.shape
+    #print top, left
+
+    image = image[top:top+target_height, left:left+target_width]
+    image = image.astype(mean.dtype)
+    image = image / np.linalg.norm(image)
+
+    #print image.shape
+    #print " "
+
+    out_name = "%04i.npy" % (index)
+    out_path = os.path.join(array_out_directory, out_name)
+    np.save(out_path, image)
+    print image_name + " ----CROP---> " + out_name
+
+    index = index + 1
+
+parser = argparse.ArgumentParser()
+subparsers = parser.add_subparsers(dest='command')
+
+# make_random_basis
+make_random_basis = subparsers.add_parser('make_random_basis')
+make_random_basis.add_argument('mean', type=str)
+make_random_basis.add_argument('scale', type=float)
+make_random_basis.add_argument('input_directory', type=str)
+make_random_basis.set_defaults(func=_make_random_basis)
+
+# plot photos
+"""
+sklearn_meanshift = subparsers.add_parser('plot_photos')
+sklearn_meanshift.add_argument('roi_path', type=str)
+sklearn_meanshift.add_argument('--labels', dest='labels', action='store_const',
+                               const=True, default=False, help='color code points by cluster')
+sklearn_meanshift.set_defaults(func=_plot_photos)
+"""
+
+args = parser.parse_args()
+args.func(args)
