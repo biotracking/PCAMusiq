@@ -105,7 +105,7 @@ def pca_image_dir(args):
    #    evimg += evimg.min()
        evimg = eigenvector
        evimg *= 255.0/eigenvector.max()
-       cv2.imwrite(os.path.join(out_dir, str(i) + ".png"), evimg)
+       cv2.imwrite(os.path.join(out_dir, filename + ".png"), evimg)
        i = i + 1
 
    print "Saved " + str(len(eigenvectors)) + " eigenvectors to " + out_dir
