@@ -137,7 +137,7 @@ def _make_random_basis(args):
     image_path = os.path.join(args.input_directory, image_name)
     image = imread(image_path)
    
-    image = crop_resize_convert_to_match_target_image(input_image=image, target_image=mean)    
+    image = crop_resize_convert_to_match_target_image(image, mean)    
 
     image = image / np.linalg.norm(image)
 
