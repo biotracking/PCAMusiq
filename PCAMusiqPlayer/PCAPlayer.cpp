@@ -64,10 +64,12 @@ QImage PCAPlayer::cvMat2QImage(cv::Mat m, int width, int height)
             float g = m.at<float>(pixelIndex * 3 + 1);
             float r = m.at<float>(pixelIndex * 3 + 2);
 
+#ifdef CLAMP_RECONSTRUCTED_COLOR
             // getting some r, g, b's outside 0.0 to 255.0 (surely because of the information loss from PCA)
-            //r = CLAMP(r, 0.0, 255.0);
-            //g = CLAMP(g, 0.0, 255.0);
-            //b = CLAMP(b, 0.0, 255.0);
+            r = CLAMP(r, 0.0, 255.0);
+            g = CLAMP(g, 0.0, 255.0);
+            b = CLAMP(b, 0.0, 255.0);
+#endif
 
             image.setPixel(x, y, qRgb(r,g,b));
         }

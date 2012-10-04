@@ -1,7 +1,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define RELEVANT_COMPONENTS 100
+#define RELEVANT_COMPONENTS 20
 #define PLOT_WIDTH 600.0
+
+#define CLAMP_RECONSTRUCTED_COLOR
 
 #endif // CONFIG_H
