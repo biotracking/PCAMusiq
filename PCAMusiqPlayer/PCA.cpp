@@ -41,9 +41,12 @@ cv::Mat vectorizeMat32f(cv::Mat m)
     return cv::Mat(1, componentCount(m), CV_MAT32F, m.data);
 }
 
-cv::Mat vectorizeMat888(cv::Mat m)
+cv::Mat vectorizeMat(cv::Mat m)
 {
-    unsigned int values = 3 * componentCount(m);
+    unsigned int values = m.channels();
+    for(int d = 0; d < m.dims; d++)
+        values *= m.size[d];
+
     cv::Mat vector = cvCreateMat(1, values, CV_MAT32F);
     unsigned char* mData = (unsigned char*) m.data;
     float* vData = (float*) vector.data;
@@ -94,7 +97,7 @@ std::vector<float> PCA::project(IplImage* img)
     cv::Mat scaledImgMat;
     cv::resize(imgMat, scaledImgMat, cv::Size(evImageWidth, evImageHeight), 0, 0, cv::INTER_CUBIC);
 
-    cv::Mat imageVector = vectorizeMat888(scaledImgMat);
+    cv::Mat imageVector = vectorizeMat(scaledImgMat);
 
     cv::Mat coefficients;
 

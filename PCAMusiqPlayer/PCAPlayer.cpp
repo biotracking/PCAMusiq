@@ -69,9 +69,16 @@ QImage PCAPlayer::cvMat2QImage(cv::Mat m, int width, int height)
         for(int y = 0; y < height; y++)
         {
             int pixelIndex = y * width + x;
+
+#ifdef BLACK_AND_WHITE
+            float r = m.at<float>(pixelIndex);
+            float g = r;
+            float b = r;
+#else
             float b = m.at<float>(pixelIndex * 3 + 0);
             float g = m.at<float>(pixelIndex * 3 + 1);
             float r = m.at<float>(pixelIndex * 3 + 2);
+#endif
 
 #ifdef CLAMP_RECONSTRUCTED_COLOR
             // getting some r, g, b's outside 0.0 to 255.0 (surely because of the information loss from PCA)
