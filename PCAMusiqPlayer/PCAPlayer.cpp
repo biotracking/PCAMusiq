@@ -42,10 +42,26 @@ void PCAPlayer::run()
 
 #ifdef BLACK_AND_WHITE
         cv::Mat capturedFrame(img);
-        cv::Mat capturedFrameBlackAndWhite(capturedFrame.rows, capturedFrame.cols, CV_8U);
+        cv::Mat capturedFrameBlackAndWhite(capturedFrame.rows, capturedFrame.cols, CV_8UC1);
+
+
         cv::cvtColor(capturedFrame, capturedFrameBlackAndWhite, CV_BGR2GRAY, 1);
+        //cvCvtColor(img, &capturedFrameBlackAndWhiteIPL, CV_BGR2GRAY);
+
+//        static bool didIt = false;
+//        if(! didIt)
+//        {
+//            capturedFrameBlackAndWhite.save("/home/dstolarsky3/Desktop/tmp.jpg");
+//            didIt = true;
+//        }
+
         IplImage capturedFrameBlackAndWhiteIPL = (IplImage) capturedFrameBlackAndWhite;
+
+
+
         img = &capturedFrameBlackAndWhiteIPL;
+
+
 #endif
 
         std::vector<float> pcaProjection = pca.project(img);
@@ -53,7 +69,6 @@ void PCAPlayer::run()
         for(size_t c = 0; c < pcaProjection.size(); c++)
             coefficients[c] = pcaProjection[c];
         newCoefficients(coefficients);
-
 
         QImage newImage = this->IplImage2QImage(img);
         newFrame(newImage);
@@ -90,27 +105,34 @@ QImage PCAPlayer::cvMat2QImage(cv::Mat m, int width, int height)
 
 QImage PCAPlayer::IplImage2QImage(IplImage *iplImage) {
 
-
+    assert(iplImage->depth == IPL_DEPTH_8U);
 
     QImage image = QImage(iplImage->width, iplImage->height, QImage::Format_RGB888);
     QImage* qtImage = &image;
 
-        // Assume IplImage having 3 channels (RGB)
+    //int channels = iplImage->nChannels;
+    char *data = iplImage->imageData;
+    char r, g, b;
 
-        //int channels = iplImage->nChannels;
-        char *data = iplImage->imageData;
-        char r, g, b;
+    for (int y=0; y < qtImage->height(); y++, data += iplImage->widthStep)
+    {
+        for (int x=0; x < qtImage->width(); x++)
+        {
+            switch(iplImage->nChannels)
+            {
+            case 3:
+                b = data[x * 3 + 0];
+                g = data[x * 3 + 1];
+                r = data[x * 3 + 2];
+                qtImage->setPixel(x, y, qRgb(r,g,b));
+                break;
+            case 1:
+                char v = data[x];
+                qtImage->setPixel(x, y, qRgb(v, v, v));
+                break;
+            }
+        }
+    }
 
-        for (int y=0; y < qtImage->height(); y++, data += iplImage->widthStep)
-
-                for (int x=0; x < qtImage->width(); x++) {
-
-                        b = data[x * 3 + 0];
-                        g = data[x * 3 + 1];
-                        r = data[x * 3 + 2];
-
-                        qtImage->setPixel(x, y, qRgb(r,g,b));
-
-                }
-        return image;
+    return image;
 }

@@ -102,7 +102,7 @@ std::vector<float> PCA::project(IplImage* img)
 
     static int frame = 0;
 
-    std::cout << frame++ << ", ";
+    //std::cout << frame++ << ", ";
 
     std::vector<float> result(RELEVANT_COMPONENTS);
     for(size_t c = 0; c < result.size(); c++)

@@ -82,6 +82,7 @@ void MainWindow::newCoefficients(TimeSeriesSamples coefficients)
 
 void MainWindow::newVideoFrame(QImage frame)
 {
+
     videoPixmap.setPixmap(QPixmap::fromImage(frame));
 
     //float timeSeriesScale = 2 * frame.height() / (coefficientTimeSeries.size() * coefficientTimeSeries[0]->boundingRect().height());
