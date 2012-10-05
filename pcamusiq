@@ -110,9 +110,10 @@ def pca_image_dir(args):
 
    print "Saved " + str(len(eigenvectors)) + " eigenvectors to " + out_dir
 
-def _make_random_basis(args):
+def _images_as_basis(args):
   import numpy as np
-  from scipy.misc import imread, imresize, imshow
+  from scipy.misc import imread, imsave, imresize, imshow, fromimage
+  from PIL import Image
   #from skimage.io import imread
   
   #import enzyme
@@ -124,9 +125,14 @@ def _make_random_basis(args):
   target_width = int(args.scale * mean.shape[1])
   target_height = int(args.scale * mean.shape[0])
   
+  array_out_directory = args.input_directory + "_as_basis"
+  
+  if args.grayscale:
+     print "Will convert images to grayscale"
+     array_out_directory = array_out_directory + "_gray"
+  
   print str(target_width) + " x " + str(target_height) + " each..."
 
-  array_out_directory = args.input_directory + "_PCA"
   dpy.ensure_dir(array_out_directory)
 
   shutil.copy(args.mean, os.path.join(array_out_directory, "mean.npy"))
@@ -135,31 +141,37 @@ def _make_random_basis(args):
   image_names = sorted(os.listdir(args.input_directory))
   for image_name in image_names:
     image_path = os.path.join(args.input_directory, image_name)
-    image = imread(image_path)
-   
+    #image = imread(image_path)
+    image = Image.open(image_path)
+    
+    if args.grayscale:
+      image = image.convert("L")
+    
+    image = fromimage(image)
+    
     image = crop_resize_convert_to_match_target_image(image, mean)    
 
     image = image / np.linalg.norm(image)
 
-    #print image.shape
-    #print " "
-
     out_name = "%04i.npy" % (index)
     out_path = os.path.join(array_out_directory, out_name)
     np.save(out_path, image)
-    print image_name + " ----CROP---> " + out_name
+    imsave(out_path + ".jpg", image)
+    print image_name + " ----constrain( "+str(target_width)+" x "+str(target_height)+" )---> " + out_name
 
     index = index + 1
 
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(dest='command')
 
-# make_random_basis
-make_random_basis = subparsers.add_parser('make_random_basis')
-make_random_basis.add_argument('mean', type=str)
-make_random_basis.add_argument('scale', type=float)
-make_random_basis.add_argument('input_directory', type=str)
-make_random_basis.set_defaults(func=_make_random_basis)
+# use images as PCA basis
+images_as_basis = subparsers.add_parser('images_as_basis')
+images_as_basis.add_argument('--grayscale', dest='grayscale', action='store_const', const=True, default=False, 
+                         help='convert input images to grayscale')
+images_as_basis.add_argument('mean', type=str)
+images_as_basis.add_argument('scale', type=float)
+images_as_basis.add_argument('input_directory', type=str)
+images_as_basis.set_defaults(func=_images_as_basis)
 
 # do pca of images
 pca_command = subparsers.add_parser('pca')
@@ -172,15 +184,6 @@ pca_command.add_argument('--stride', type=int, default=1,
                          help='use 1 out of every STRIDE images')
 pca_command.add_argument('--scale', type=float, default=1.0,
                          help='Scale images by SCALE')
-
-# plot photos
-"""
-sklearn_meanshift = subparsers.add_parser('plot_photos')
-sklearn_meanshift.add_argument('roi_path', type=str)
-sklearn_meanshift.add_argument('--labels', dest='labels', action='store_const',
-                               const=True, default=False, help='color code points by cluster')
-sklearn_meanshift.set_defaults(func=_plot_photos)
-"""
 
 args = parser.parse_args()
 args.func(args)
