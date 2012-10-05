@@ -116,34 +116,47 @@ def _images_as_basis(args):
   from PIL import Image
   #from skimage.io import imread
   
-  #import enzyme
-  #video_meta = enzyme.parse(args.video_to_reconstruct)
-  #target_width = int(args.scale * video_meta.video[0].width)
-  #target_height = int(args.scale * video_meta.video[0].height)
-  
-  mean = np.load(args.mean)
-  target_width = int(args.scale * mean.shape[1])
-  target_height = int(args.scale * mean.shape[0])
-  
+  target_width  = None
+  target_height = None
+
+  mean = None
+  if args.mean != None:
+    mean = np.load(args.mean)
+    target_width = int(args.scale * mean.shape[1])
+    target_height = int(args.scale * mean.shape[0])
+  else:
+    import enzyme
+    video_meta = enzyme.parse(args.target_video)
+    target_width = int(args.scale * video_meta.video[0].width)
+    target_height = int(args.scale * video_meta.video[0].height)
+    if args.grayscale:
+      mean = np.ones((target_height, target_width), dtype=np.dtype('float32'))
+      mean = 128.0 * mean
+    else:
+      mean = np.ones((target_height, target_width, 3), dtype=np.dtype('float32'))
+      mean = 128.0 * mean
+  print "Mean: "
+  print mean
+    
   array_out_directory = args.input_directory + "_as_basis"
   
   if args.grayscale:
      print "Will convert images to grayscale"
      array_out_directory = array_out_directory + "_gray"
 
-     if mean.shape[2] > 1:
+     if len(mean.shape) > 2:
        print " "
        print args.mean + "\nhas more than 1 channel. Need a grayscale mean.\n"
        exit()
 
-     mean = toimage(mean)
-     mean.show()
-  
   print str(target_width) + " x " + str(target_height) + " each..."
 
   dpy.ensure_dir(array_out_directory)
 
-  shutil.copy(args.mean, os.path.join(array_out_directory, "mean.npy"))
+  #shutil.copy(args.mean, os.path.join(array_out_directory, "mean.npy"))
+  mean_out_path = os.path.join(array_out_directory, "mean.npy")
+  np.save(mean_out_path, mean)
+  imsave(mean_out_path + ".jpg", mean.astype(np.dtype('uint8')))
 
   index = 0
   image_names = sorted(os.listdir(args.input_directory))
@@ -165,7 +178,7 @@ def _images_as_basis(args):
     out_path = os.path.join(array_out_directory, out_name)
     np.save(out_path, image)
     imsave(out_path + ".jpg", image)
-    print image_name + " ----constrain( "+str(target_width)+" x "+str(target_height)+" )---> " + out_name
+    print image_name + " ----constrain( "+str(target_width)+" x "+str(target_height)+" )---> " + out_path
 
     index = index + 1
 
@@ -174,9 +187,13 @@ subparsers = parser.add_subparsers(dest='command')
 
 # use images as PCA basis
 images_as_basis = subparsers.add_parser('images_as_basis')
-images_as_basis.add_argument('--grayscale', dest='grayscale', action='store_const', const=True, default=False, 
-                         help='convert input images to grayscale')
-images_as_basis.add_argument('mean', type=str)
+images_as_basis.add_argument('-g', '--grayscale', dest='grayscale', action='store_const', const=True, default=False, 
+                             help='convert input images to grayscale')
+size_specifiers = images_as_basis.add_mutually_exclusive_group(required=True)
+size_specifiers.add_argument('-m', '--mean', type=str,
+                             help='set size and mean from this NumPy array')
+size_specifiers.add_argument('-t', '--target-video', type=str,
+                             help='set size from this video, generate gray mean')
 images_as_basis.add_argument('scale', type=float)
 images_as_basis.add_argument('input_directory', type=str)
 images_as_basis.set_defaults(func=_images_as_basis)
