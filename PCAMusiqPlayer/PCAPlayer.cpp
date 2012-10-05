@@ -43,25 +43,9 @@ void PCAPlayer::run()
 #ifdef BLACK_AND_WHITE
         cv::Mat capturedFrame(img);
         cv::Mat capturedFrameBlackAndWhite(capturedFrame.rows, capturedFrame.cols, CV_8UC1);
-
-
         cv::cvtColor(capturedFrame, capturedFrameBlackAndWhite, CV_BGR2GRAY, 1);
-        //cvCvtColor(img, &capturedFrameBlackAndWhiteIPL, CV_BGR2GRAY);
-
-//        static bool didIt = false;
-//        if(! didIt)
-//        {
-//            capturedFrameBlackAndWhite.save("/home/dstolarsky3/Desktop/tmp.jpg");
-//            didIt = true;
-//        }
-
         IplImage capturedFrameBlackAndWhiteIPL = (IplImage) capturedFrameBlackAndWhite;
-
-
-
         img = &capturedFrameBlackAndWhiteIPL;
-
-
 #endif
 
         std::vector<float> pcaProjection = pca.project(img);
