@@ -112,7 +112,7 @@ def pca_image_dir(args):
 
 def _images_as_basis(args):
   import numpy as np
-  from scipy.misc import imread, imsave, imresize, imshow, fromimage
+  from scipy.misc import imread, imsave, imresize, imshow, fromimage, toimage
   from PIL import Image
   #from skimage.io import imread
   
@@ -130,6 +130,14 @@ def _images_as_basis(args):
   if args.grayscale:
      print "Will convert images to grayscale"
      array_out_directory = array_out_directory + "_gray"
+
+     if mean.shape[2] > 1:
+       print " "
+       print args.mean + "\nhas more than 1 channel. Need a grayscale mean.\n"
+       exit()
+
+     mean = toimage(mean)
+     mean.show()
   
   print str(target_width) + " x " + str(target_height) + " each..."
 
