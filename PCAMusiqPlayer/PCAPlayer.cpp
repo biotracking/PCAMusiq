@@ -38,6 +38,16 @@ void PCAPlayer::run()
         }
         img = cvRetrieveFrame(capture);           // retrieve the captured frame
 
+
+
+#ifdef BLACK_AND_WHITE
+        cv::Mat capturedFrame(img);
+        cv::Mat capturedFrameBlackAndWhite(capturedFrame.rows, capturedFrame.cols, CV_8U);
+        cv::cvtColor(capturedFrame, capturedFrameBlackAndWhite, CV_BGR2GRAY, 1);
+        IplImage capturedFrameBlackAndWhiteIPL = (IplImage) capturedFrameBlackAndWhite;
+        img = &capturedFrameBlackAndWhiteIPL;
+#endif
+
         std::vector<float> pcaProjection = pca.project(img);
         QVector<float> coefficients(pcaProjection.size());
         for(size_t c = 0; c < pcaProjection.size(); c++)

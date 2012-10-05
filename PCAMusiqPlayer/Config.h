@@ -5,5 +5,6 @@
 #define PLOT_WIDTH 600.0
 
 #define CLAMP_RECONSTRUCTED_COLOR
+#define BLACK_AND_WHITE
 
 #endif // CONFIG_H
