@@ -8,9 +8,14 @@
 
 #include "external/cnpy/cnpy.h"
 
+
+
+
 class PCA
 {
     //Q_OBJECT
+
+    friend class PCAPlayer;
 
 public:
     PCA(QString path);
@@ -21,11 +26,14 @@ public:
     int getEVImageWidth() { return evImageWidth; }
     int getEVImageHeight() { return evImageHeight; }
 
+protected:
+    cv::PCA cvPCA;
+
 private:
     int evImageWidth;
     int evImageHeight;
 
-    cv::PCA cvPCA;
+
     cv::Mat backProjection;
 };
 

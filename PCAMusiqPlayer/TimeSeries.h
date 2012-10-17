@@ -26,6 +26,7 @@ private:
     float min;
 
     QRectF rect;
+    float valueLabelWidth;
 };
 
 #endif // TIMESERIES_H

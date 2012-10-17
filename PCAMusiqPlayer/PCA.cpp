@@ -9,6 +9,8 @@
 
 #include "Config.h"
 
+#include "CVUtil.h"
+
 cv::Mat npyFile2cvMat(std::string path)
 {
     cnpy::NpyArray array = cnpy::npy_load(path.c_str());
@@ -28,17 +30,9 @@ cv::Mat npyFile2cvMat(std::string path)
     return result;
 }
 
-size_t componentCount(cv::Mat m)
-{
-    size_t count = 1;
-    for(int d = 0; d < m.dims; d++)
-        count *= m.size[d];
-    return count;
-}
-
 cv::Mat vectorizeMat32f(cv::Mat m)
 {
-    return cv::Mat(1, componentCount(m), CV_MAT32F, m.data);
+    return cv::Mat(1, CVUtil::componentCount(m), CV_MAT32F, m.data);
 }
 
 cv::Mat vectorizeMat(cv::Mat m)
@@ -103,15 +97,10 @@ std::vector<float> PCA::project(IplImage* img)
 
     cvPCA.project(imageVector, coefficients);
 
-    static int frame = 0;
-
-    //std::cout << frame++ << ", ";
-
     std::vector<float> result(RELEVANT_COMPONENTS);
     for(size_t c = 0; c < result.size(); c++)
     {
         result[c] = ((float*)coefficients.data)[c];
-        //result[c] = 0.0; // debug: do i get b&w mean?
     }
 
     return result;

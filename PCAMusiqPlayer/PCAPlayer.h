@@ -9,6 +9,7 @@
 #include <opencv/highgui.h>
 
 #include "TimeSeries.h"
+#include "PCA.h"
 
 class PCAPlayer : public QThread
 {
@@ -23,11 +24,16 @@ signals:
 
 public:
     PCAPlayer();
+    QVector<QImage> eigenFrames();
     void run();
 
 private:
     QImage IplImage2QImage(IplImage *iplImage);
     QImage cvMat2QImage(cv::Mat m, int width, int height);
+    float maxMatf(cv::Mat m);
+
+    CvCapture* capture;
+    PCA pca;
 };
 
 #endif // PCAPLAYER_H

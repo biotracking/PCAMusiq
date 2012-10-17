@@ -9,6 +9,7 @@
 
 TimeSeries::TimeSeries()
 {
+    valueLabelWidth = 100.0;
 }
 
 void TimeSeries::appendSample(float value)
@@ -33,8 +34,11 @@ QRectF TimeSeries::boundingRect() const
 
 void TimeSeries::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QPointF middleLeft(boundingRect().left(), boundingRect().height()/2.0);
-    QPointF middleRight(boundingRect().right(), boundingRect().height()/2.0);
+    QRectF plotRect = boundingRect();
+    plotRect.setRight(plotRect.right() - valueLabelWidth);
+
+    QPointF middleLeft(plotRect.left(), plotRect.height()/2.0);
+    QPointF middleRight(plotRect.right(), plotRect.height()/2.0);
 
 
     painter->setPen(QColor(230, 230, 230));
@@ -42,6 +46,8 @@ void TimeSeries::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
     painter->setPen(QColor(0, 0, 0));
     painter->drawRect(boundingRect());
+    painter->drawRect(plotRect);
+    //painter->drawLine(middleRight.x(), boundingRect().bottom(), middleRight.x(), boundingRect().top());
 
 
     if(values.size() < 1)
@@ -49,12 +55,14 @@ void TimeSeries::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
 
 
-    unsigned int start = MAX(0, int(values.size() - boundingRect().width()));
-    QPainterPath path(QPointF(rect.right(), boundingRect().height() * (values.last() - min) / (max - min)));
+    unsigned int start = MAX(0, int(values.size() - plotRect.width()));
+    //QPainterPath path(QPointF(rect.right(), plotRect.height() * (values.last() - min) / (max - min)));
+    QPainterPath path(QPointF(plotRect.right(), plotRect.height() * (values.last() - min) / (max - min)));
     for(int s = values.size()-2; s >= 0; s--)
     {
         float normalized = (values[s] - min) / (max - min);
-        path.lineTo((float) (rect.right() - values.size() + s), boundingRect().height() * normalized);
+        //path.lineTo((float) (rect.right() - values.size() + s), plotRect.height() * normalized);
+        path.lineTo((float) (plotRect.right() - values.size() + s), plotRect.height() * normalized);
     }
 
 

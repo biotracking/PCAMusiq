@@ -12,10 +12,12 @@ HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
     PCA.h \
     TimeSeries.h \
     Config.h \
-    MathUtil.h
+    MathUtil.h \
+    CVUtil.h
 SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     PCA.cpp \
-    TimeSeries.cpp
+    TimeSeries.cpp \
+    CVUtil.cpp
 
 unix {
     CONFIG += link_pkgconfig

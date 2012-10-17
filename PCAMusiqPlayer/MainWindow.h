@@ -25,6 +25,7 @@ class MainWindow : public QMainWindow
     std::vector<TimeSeries*> coefficientTimeSeries;
 
     PCAPlayer player;
+    float singlePlotHeight;
 
 public slots:
     void newVideoFrame(QImage frame);

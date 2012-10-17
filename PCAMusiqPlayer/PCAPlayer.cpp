@@ -6,28 +6,43 @@
 #include <QStringList>
 #include <QImage>
 
-#include "PCA.h"
+
 #include "Config.h"
 #include "MathUtil.h"
 
 
 PCAPlayer::PCAPlayer()
-{
-
-}
-
-void PCAPlayer::run()
+  : pca(QApplication::instance()->arguments()[2])
 {
     // load original video
     QString videofilename = QApplication::instance()->arguments()[1];
     qDebug() << "Opening " << videofilename;
-    CvCapture* capture = cvCaptureFromFile(videofilename.toStdString().c_str());
+    capture = cvCaptureFromFile(videofilename.toStdString().c_str());
     cvQueryFrame(capture);
 
     // load PCA
-    QString pcaPath = QApplication::instance()->arguments()[2];
-    PCA pca(pcaPath);
+    //QString pcaPath = QApplication::instance()->arguments()[2];
 
+}
+
+QVector<QImage> PCAPlayer::eigenFrames()
+{
+    QVector<QImage> images;
+    for(int ev = 0; ev < pca.cvPCA.eigenvectors.rows; ev++)
+    {
+        cv::Mat eigenVector = pca.cvPCA.eigenvectors.row(ev);
+        float max = maxMatf(eigenVector);
+        cv::Mat visibleEigenVector = 255 * eigenVector / max;
+
+        QImage image = this->cvMat2QImage(visibleEigenVector, pca.getEVImageWidth(), pca.getEVImageHeight());
+
+        images.push_back(image);
+    }
+    return images;
+}
+
+void PCAPlayer::run()
+{
 
     while(1)
     {
@@ -62,9 +77,30 @@ void PCAPlayer::run()
     }
 }
 
+size_t componentCount(cv::Mat m)
+{
+    size_t count = 1;
+    for(int d = 0; d < m.dims; d++)
+        count *= m.size[d];
+    return count;
+}
+
+float PCAPlayer::maxMatf(cv::Mat m)
+{
+    float max = 0.0;
+
+    for(int v = 0; v < componentCount(m); v++)
+    {
+        max = MAX(m.at<float>(v), max);
+    }
+
+    return max;
+}
+
 QImage PCAPlayer::cvMat2QImage(cv::Mat m, int width, int height)
 {
     QImage image = QImage(width, height, QImage::Format_RGB888);
+
 
     for(int x = 0; x < width; x++)
     {
@@ -76,6 +112,7 @@ QImage PCAPlayer::cvMat2QImage(cv::Mat m, int width, int height)
             float r = m.at<float>(pixelIndex);
             float g = r;
             float b = r;
+
 #else
             float b = m.at<float>(pixelIndex * 3 + 0);
             float g = m.at<float>(pixelIndex * 3 + 1);
@@ -92,6 +129,7 @@ QImage PCAPlayer::cvMat2QImage(cv::Mat m, int width, int height)
             image.setPixel(x, y, qRgb(r,g,b));
         }
     }
+
 
     return image;
 }
