@@ -25,6 +25,8 @@ void TimeSeries::appendSample(float value)
         min = MIN(min, value);
     }
     values.push_back(value);
+
+    currentValue = value;
 }
 
 QRectF TimeSeries::boundingRect() const
@@ -36,6 +38,8 @@ void TimeSeries::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 {
     QRectF plotRect = boundingRect();
     plotRect.setRight(plotRect.right() - valueLabelWidth);
+    QRectF labelRect = boundingRect();
+    labelRect.setLeft(plotRect.right());
 
     QPointF middleLeft(plotRect.left(), plotRect.height()/2.0);
     QPointF middleRight(plotRect.right(), plotRect.height()/2.0);
@@ -48,6 +52,8 @@ void TimeSeries::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->drawRect(boundingRect());
     painter->drawRect(plotRect);
     //painter->drawLine(middleRight.x(), boundingRect().bottom(), middleRight.x(), boundingRect().top());
+
+    painter->drawText(labelRect, QString("%1").arg(currentValue));
 
 
     if(values.size() < 1)

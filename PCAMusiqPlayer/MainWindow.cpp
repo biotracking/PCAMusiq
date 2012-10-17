@@ -83,6 +83,7 @@ void MainWindow::newCoefficients(TimeSeriesSamples coefficients)
     {
         TimeSeries* ts = coefficientTimeSeries[c];
         ts->appendSample(coefficients[c]);
+
     }
 }
 

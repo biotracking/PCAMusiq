@@ -24,6 +24,7 @@ private:
     TimeSeriesSamples values;
     float max;
     float min;
+    float currentValue;
 
     QRectF rect;
     float valueLabelWidth;
