@@ -8,6 +8,7 @@
 #include <QGraphicsPixmapItem>
 
 #include "PCAPlayer.h"
+#include "OscSender.h"
 #include "TimeSeries.h"
 
 class MainWindow : public QMainWindow
@@ -25,6 +26,8 @@ class MainWindow : public QMainWindow
     std::vector<TimeSeries*> coefficientTimeSeries;
 
     PCAPlayer player;
+    OscSender oscSender;
+
     float singlePlotHeight;
 
 public slots:

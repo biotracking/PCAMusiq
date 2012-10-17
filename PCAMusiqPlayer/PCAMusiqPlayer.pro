@@ -13,15 +13,17 @@ HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
     TimeSeries.h \
     Config.h \
     MathUtil.h \
-    CVUtil.h
+    CVUtil.h \
+    OscSender.h
 SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     PCA.cpp \
     TimeSeries.cpp \
-    CVUtil.cpp
+    CVUtil.cpp \
+    OscSender.cpp
 
 unix {
     CONFIG += link_pkgconfig
-    PKGCONFIG += opencv
+    PKGCONFIG += opencv liblo
 }
 
 QT += opengl

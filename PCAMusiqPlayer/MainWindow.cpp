@@ -12,13 +12,24 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , graphicsView(&scene)
 {
-    QObject::connect(&player, SIGNAL(newFrame(QImage)),
-                        this, SLOT(newVideoFrame(QImage)));
-    QObject::connect(&player, SIGNAL(newReconstructedFrame(QImage)),
-                        this, SLOT(newReconstructedFrame(QImage)));
-    QObject::connect(&player, SIGNAL(newCoefficients(TimeSeriesSamples)),
-                        this, SLOT(newCoefficients(TimeSeriesSamples)),
-                     Qt::DirectConnection);
+    QObject::connect(
+        &player, SIGNAL(newFrame(QImage)),
+           this, SLOT(newVideoFrame(QImage))
+    );
+    QObject::connect(
+        &player, SIGNAL(newReconstructedFrame(QImage)),
+           this, SLOT(newReconstructedFrame(QImage))
+    );
+    QObject::connect(
+        &player, SIGNAL(newCoefficients(TimeSeriesSamples)),
+           this, SLOT(newCoefficients(TimeSeriesSamples)),
+        Qt::DirectConnection
+    );
+    QObject::connect(
+        &player, SIGNAL(newCoefficients(TimeSeriesSamples)),
+     &oscSender, SLOT(newValues(TimeSeriesSamples)),
+        Qt::DirectConnection
+    );
 
     graphicsView.resize(1280, 900);
 
