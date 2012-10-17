@@ -111,9 +111,8 @@ std::vector<float> PCA::project(IplImage* img)
     for(size_t c = 0; c < result.size(); c++)
     {
         result[c] = ((float*)coefficients.data)[c];
-        //std::cout << result[c] << ", ";
+        //result[c] = 0.0; // debug: do i get b&w mean?
     }
-    //std::cout << std::endl;
 
     return result;
 }

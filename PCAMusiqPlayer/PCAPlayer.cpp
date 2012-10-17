@@ -51,7 +51,9 @@ void PCAPlayer::run()
         std::vector<float> pcaProjection = pca.project(img);
         QVector<float> coefficients(pcaProjection.size());
         for(size_t c = 0; c < pcaProjection.size(); c++)
+        {
             coefficients[c] = pcaProjection[c];
+        }
         newCoefficients(coefficients);
 
         QImage newImage = this->IplImage2QImage(img);
