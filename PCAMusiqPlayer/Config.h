@@ -7,7 +7,9 @@
 #define CLAMP_RECONSTRUCTED_COLOR
 #define BLACK_AND_WHITE
 
-#define MUSIC_OSC_PATH "/fish"
-#define MUSIC_OSC_FLOAT_COUNT 12
+#define MUSIC_BOX_OSC_PATH "/fish"
+#define MUSIC_BOX_INT_COUNT 12
+#define MUSIC_BOX_INT_MIN 0
+#define MUSIC_BOX_INT_MAX 127
 
 #endif // CONFIG_H

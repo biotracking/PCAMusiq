@@ -23,6 +23,7 @@ PCAPlayer::PCAPlayer()
     // load PCA
     //QString pcaPath = QApplication::instance()->arguments()[2];
 
+
 }
 
 QVector<QImage> PCAPlayer::eigenFrames()

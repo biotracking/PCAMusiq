@@ -21,6 +21,7 @@ signals:
     void newFrame(QImage frame);
     void newReconstructedFrame(QImage reconstructedFrame);
     void newCoefficients(TimeSeriesSamples coefficients);
+    void newNormalizedCoefficients(TimeSeriesSamples coefficients);
 
 public:
     PCAPlayer();
@@ -28,12 +29,16 @@ public:
     void run();
 
 private:
+    void sendNormalizedCoefficients(TimeSeriesSamples coefficients);
+
     QImage IplImage2QImage(IplImage *iplImage);
     QImage cvMat2QImage(cv::Mat m, int width, int height);
     float maxMatf(cv::Mat m);
 
     CvCapture* capture;
     PCA pca;
+
+
 };
 
 #endif // PCAPLAYER_H

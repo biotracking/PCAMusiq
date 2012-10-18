@@ -19,6 +19,10 @@ public slots:
 
 private:
     lo_address oscAppAddress;
+
+    TimeSeriesSamples minimums;
+    TimeSeriesSamples maximums;
+    bool processedFirstFrame;
 };
 
 #endif // OSCSENDER_H
