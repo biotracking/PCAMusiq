@@ -12,7 +12,7 @@ PCAVideoPlayer uses a Qt-based build (qmake). You can open the .pro file in QtCr
 Running PCAVideoPlayer
 -----------------------
 ```sh
-path/to/PCAMusiqPlayer <original_video> <pca_directory> <osc_address_and_port> 1.2.3.4:port
+path/to/PCAMusiqPlayer <original_video> <pca_directory> <osc_address_and_port>
 ```
 for example:
 ```
