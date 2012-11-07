@@ -29,3 +29,5 @@ unix {
 QT += opengl
 
 OTHER_FILES +=
+
+unix:*-g++*: QMAKE_CXXFLAGS += -fpermissive # OS X SDK Fix
