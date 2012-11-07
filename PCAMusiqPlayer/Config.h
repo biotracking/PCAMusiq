@@ -5,7 +5,7 @@
 #define PLOT_WIDTH 800.0
 
 #define CLAMP_RECONSTRUCTED_COLOR
-#define BLACK_AND_WHITE
+//#define BLACK_AND_WHITE
 
 #define MUSIC_BOX_OSC_PATH "/fish"
 #define MUSIC_BOX_INT_COUNT 12

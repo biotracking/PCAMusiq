@@ -73,6 +73,8 @@ PCA::PCA(QString path)
         }
     }
 
+    assert(evImageWidth > 0);
+
     for (int v = 0; v < eigenVectorFilenames.size() && v < RELEVANT_COMPONENTS; v++)
     {
         QString filePath = eigenVectorFilenames[v];
