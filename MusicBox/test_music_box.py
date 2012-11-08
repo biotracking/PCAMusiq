@@ -3,8 +3,6 @@
 from OSC import OSCClient, OSCMessage
 import time, math
 
-print dir(OSCMessage)
-
 period = 10
 param_count = 9
 param_low = 0
