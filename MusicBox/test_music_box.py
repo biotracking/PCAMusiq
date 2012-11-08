@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import dpy
 from OSC import OSCClient, OSCMessage
 import time, math
 
