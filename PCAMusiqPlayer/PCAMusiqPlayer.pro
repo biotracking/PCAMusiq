@@ -5,21 +5,24 @@
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
-INCLUDEPATH += . external/cnpy
+INCLUDEPATH += . external/cnpy external
 
-# Input
 HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
     PCA.h \
     TimeSeries.h \
     Config.h \
     MathUtil.h \
     CVUtil.h \
-    OscSender.h
+    OscSender.h \
+    PvAPI.h
+
 SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     PCA.cpp \
     TimeSeries.cpp \
     CVUtil.cpp \
     OscSender.cpp
+
+LIBS += -Llib -lPvAPI
 
 unix {
     CONFIG += link_pkgconfig
