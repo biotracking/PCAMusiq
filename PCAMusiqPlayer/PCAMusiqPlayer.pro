@@ -22,11 +22,16 @@ SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     CVUtil.cpp \
     OscSender.cpp
 
-LIBS += -Llib -lPvAPI
+LIBS += -L$$PWD/lib -lPvAPI
 
 unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += opencv liblo
+}
+
+mac {
+  CONFIG -= app_bundle
+  LIBS += -L/usr/local/Cellar/boost/1.51.0/lib -lboost_program_options-mt
 }
 
 QT += opengl

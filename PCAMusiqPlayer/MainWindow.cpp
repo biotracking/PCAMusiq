@@ -12,6 +12,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , graphicsView(&scene)
 {
+
+
+
     QObject::connect(
         &player, SIGNAL(newFrame(QImage)),
            this, SLOT(newVideoFrame(QImage))

@@ -20,9 +20,11 @@ PCAPlayer::PCAPlayer()
     capture = cvCaptureFromFile(videofilename.toStdString().c_str());
     cvQueryFrame(capture);
 
-    // load PCA
-    //QString pcaPath = QApplication::instance()->arguments()[2];
+    if(QApplication::instance()->arguments().contains("-l") ||
+       QApplication::instance()->arguments().contains("--live-video"))
+    {
 
+    }
 
 }
 
