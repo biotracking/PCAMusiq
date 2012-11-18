@@ -1,6 +1,6 @@
 #include "VideoSource.h"
 
-VideoSource::VideoSource(VideoSourceFrameReceiver *sink)
+VideoSource::VideoSource(VideoSourceFrameReceiver *receiver)
 {
-    this->sink = sink;
+    this->receiver = receiver;
 }

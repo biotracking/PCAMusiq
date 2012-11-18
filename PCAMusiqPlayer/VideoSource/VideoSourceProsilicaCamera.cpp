@@ -1,12 +1,78 @@
 #include "VideoSourceProsilicaCamera.h"
 
+#ifdef _WINDOWS
+#include "StdAfx.h"
+#endif
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef _WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#endif
+
+#if defined(_LINUX) || defined(_QNX) || defined(_OSX)
+#include <unistd.h>
+#include <time.h>
+#include <signal.h>
+#endif
+
+#include <PvApi.h>
+
+VideoSourceProsilicaCamera* instance;
+
 VideoSourceProsilicaCamera::VideoSourceProsilicaCamera(VideoSourceFrameReceiver *receiver)
     : VideoSource(receiver)
 {
+    instance = this;
+}
+
+void VideoSourceProsilicaCamera::frameCallback(tPvFrame* pFrame)
+{
+
+#if 0
+    // tPvFrame struct reference (relevant portion)
+    tPvErr              Status;             // Status of this frame
+
+    void*               ImageBuffer;        // Buffer for image/pixel data.
+    unsigned long       ImageBufferSize;    // Size of ImageBuffer in bytes
+
+    unsigned long       ImageSize;          // Image size, in bytes
+    unsigned long       AncillarySize;      // Ancillary data size, in bytes
+
+    unsigned long       Width;              // Image width
+    unsigned long       Height;             // Image height
+    unsigned long       RegionX;            // Start of readout region (left)
+    unsigned long       RegionY;            // Start of readout region (top)
+    tPvImageFormat      Format;             // Image format
+    unsigned long       BitDepth;           // Number of significant bits
+    tPvBayerPattern     BayerPattern;       // Bayer pattern, if bayer format
+
+    unsigned long       FrameCount;         // Frame counter. Uses 16bit GigEVision BlockID. Rolls at 65535.
+    unsigned long       TimestampLo;        // Time stamp, lower 32-bits
+    unsigned long       TimestampHi;        // Time stamp, upper 32-bits
+
+    unsigned long       _reserved2[32];
+#endif
+
+    printf("VideoSourceProsilicaCamera::frameCallback(): Frame %u, %u x %u, %i\n", pFrame->FrameCount, pFrame->Width, pFrame->Height, pFrame->Format);
+
+    assert(pFrame->Format == ePvFmtRgb24);
+
+    cv::Mat frame(cv::Size(pFrame->Width, pFrame->Height), CV_8UC3, pFrame->ImageBuffer, cv::Mat::AUTO_STEP);
+
+    this->receiver->newFrame(frame);
 }
 
 
+
 /*
+ * Pasted and modified by david.stolarsky@gmail.com, github.com/gimlids
+ * for balchgroup@cc.gatech aquarium / PCA music box project
+ *
+ *
 | ==============================================================================
 | Copyright (C) 2006-2011 Allied Vision Technologies.  All Rights Reserved.
 |
@@ -40,26 +106,7 @@ VideoSourceProsilicaCamera::VideoSourceProsilicaCamera(VideoSourceFrameReceiver 
 |==============================================================================
 */
 
-#ifdef _WINDOWS
-#include "StdAfx.h"
-#endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#ifdef _WINDOWS
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#endif
-
-#if defined(_LINUX) || defined(_QNX) || defined(_OSX)
-#include <unistd.h>
-#include <time.h>
-#include <signal.h>
-#endif
-
-#include <PvApi.h>
 
 #ifdef _WINDOWS
 #define _STDCALL __stdcall
@@ -160,7 +207,7 @@ void _STDCALL FrameDoneCB(tPvFrame* pFrame)
     //E.g. display to screen, shift pFrame->ImageBuffer location for later usage , etc
     //Here we display FrameCount and Status
     if (pFrame->Status == ePvErrSuccess)
-        printf("Frame: %u returned successfully\n", pFrame->FrameCount);
+        instance->frameCallback(pFrame);
     else if (pFrame->Status == ePvErrDataMissing)
         //Possible improper network card settings. See GigE Installation Guide.
         printf("Frame: %u dropped packets\n", pFrame->FrameCount);

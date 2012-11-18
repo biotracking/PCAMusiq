@@ -10,10 +10,10 @@ class VideoSourceFrameReceiver;
 class VideoSource
 {
 public:
-    VideoSource(VideoSourceFrameReceiver* sink);
+    VideoSource(VideoSourceFrameReceiver* receiver);
     virtual void start() = 0;
 protected:
-    VideoSourceFrameReceiver* sink;
+    VideoSourceFrameReceiver* receiver;
 };
 
 class VideoSourceFrameReceiver : public QObject

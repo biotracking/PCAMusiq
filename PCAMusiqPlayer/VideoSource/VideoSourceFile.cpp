@@ -32,7 +32,7 @@ void VideoSourceFile::run()
         img = capturedFrameBlackAndWhite;
 #endif
 
-        this->sink->newFrame(img);
+        this->receiver->newFrame(img);
     }
 }
 
