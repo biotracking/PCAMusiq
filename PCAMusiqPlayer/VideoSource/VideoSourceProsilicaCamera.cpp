@@ -57,13 +57,13 @@ void VideoSourceProsilicaCamera::frameCallback(tPvFrame* pFrame)
     unsigned long       _reserved2[32];
 #endif
 
-    printf("VideoSourceProsilicaCamera::frameCallback(): Frame %u, %u x %u, %i\n", pFrame->FrameCount, pFrame->Width, pFrame->Height, pFrame->Format);
+    //printf("VideoSourceProsilicaCamera::frameCallback(): Frame %u, %u x %u, %i\n", pFrame->FrameCount, pFrame->Width, pFrame->Height, pFrame->Format);
 
     assert(pFrame->Format == ePvFmtRgb24);
 
     cv::Mat frame(cv::Size(pFrame->Width, pFrame->Height), CV_8UC3, pFrame->ImageBuffer, cv::Mat::AUTO_STEP);
 
-    this->receiver->newFrame(frame);
+    this->receiver->newFrame(frame/*, RGB*/);
 }
 
 

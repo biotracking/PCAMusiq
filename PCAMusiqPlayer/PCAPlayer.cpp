@@ -60,7 +60,7 @@ QVector<QImage> PCAPlayer::eigenFrames()
 
     while(1)
     { */
-void PCAPlayer::newFrame(cv::Mat frame)
+void PCAPlayer::newFrame(cv::Mat frame/*, ColorFormat colorFormat*/)
 {
 
     std::vector<float> pcaProjection = pca.project(frame);
@@ -70,14 +70,14 @@ void PCAPlayer::newFrame(cv::Mat frame)
         coefficients[c] = pcaProjection[c];
     }
 
-    qDebug() << coefficients;
+    //qDebug() << coefficients;
     newCoefficients(coefficients);
 
     QImage newImage = CVUtil::cvMat2QImage<unsigned char>(frame);
     displayNewSourceFrame(newImage);
 
     newReconstructedFrame(
-        CVUtil::cvMat2QImage<unsigned char>(pca.backProject(pcaProjection), pca.getEVImageWidth(), pca.getEVImageHeight())
+        CVUtil::cvMat2QImage<float>(pca.backProject(pcaProjection)/*, colorFormat*/, pca.getEVImageWidth(), pca.getEVImageHeight())
     );
 }
 /*

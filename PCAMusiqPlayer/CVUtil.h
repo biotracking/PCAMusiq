@@ -19,9 +19,9 @@ public:
         return count;
     };
 
-    template <typename T> static QImage cvMat2QImage(cv::Mat m, int width = -1, int height = -1)
+    template <typename T> static QImage cvMat2QImage(cv::Mat m, /*ColorFormat colorFormat,*/ int width = -1, int height = -1)
     {
-        qDebug() << "cvMat2QImage input: " << width << ", " << height;
+        //qDebug() << "cvMat2QImage input: " << width << ", " << height;
 
         if(width == -1 || height == -1)
         {
@@ -30,7 +30,7 @@ public:
         }
 
 
-        qDebug() << "depth: " << m.depth() << ", channels: " << m.channels(); CV_8U;
+        //qDebug() << "depth: " << m.depth() << ", channels: " << m.channels(); CV_8U;
 
         QImage image = QImage(width, height, QImage::Format_RGB888);
 

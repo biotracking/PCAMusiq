@@ -5,6 +5,11 @@
 
 #include <opencv/cv.h>
 
+enum ColorFormat
+{
+    RGB, BGR
+};
+
 class VideoSourceFrameReceiver;
 
 class VideoSource
@@ -19,7 +24,7 @@ protected:
 class VideoSourceFrameReceiver : public QObject
 {
 public:
-    virtual void newFrame(cv::Mat frame) = 0;
+    virtual void newFrame(cv::Mat frame/*, ColorFormat colorFormat*/) = 0;
 };
 
 #endif // VIDEOSOURCE_H
