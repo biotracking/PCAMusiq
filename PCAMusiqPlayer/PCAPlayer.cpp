@@ -48,7 +48,7 @@ QVector<QImage> PCAPlayer::eigenFrames()
         cv::Mat visibleEigenVector = 255 * eigenVector / max;
 
         qDebug() << visibleEigenVector.depth();
-        QImage image = CVUtil::cvMat2QImage<unsigned char>(visibleEigenVector, pca.getEVImageWidth(), pca.getEVImageHeight());
+        QImage image = CVUtil::cvMat2QImage<float>(visibleEigenVector, pca.getEVImageWidth(), pca.getEVImageHeight());
 
         images.push_back(image);
     }
