@@ -7,7 +7,9 @@ class VideoSourceProsilicaCamera : public VideoSource
 {
 public:
     VideoSourceProsilicaCamera(VideoSourceFrameReceiver* receiver);
-    void start() { };
+
+    void start();
+    void stop();
 };
 
 #endif // PROSILICACAMERA_H

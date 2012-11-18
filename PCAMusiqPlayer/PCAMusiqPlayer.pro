@@ -28,7 +28,7 @@ SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     VideoSource/VideoSourceFile.cpp \
     VideoSource/VideoSourceProsilicaCamera.cpp
 
-LIBS += -L$$PWD/lib -lPvAPI
+LIBS += -L$$(PWD)/bin -lPvAPI
 
 unix {
     CONFIG += link_pkgconfig
@@ -38,6 +38,7 @@ unix {
 mac {
   CONFIG -= app_bundle
   LIBS += -L/usr/local/Cellar/boost/1.51.0/lib -lboost_program_options-mt
+  DEFINES += _OSX _x64 #for PvAPI
 }
 
 QT += opengl
