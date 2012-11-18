@@ -10,6 +10,7 @@
 TimeSeries::TimeSeries()
 {
     valueLabelWidth = 100.0;
+    qDebug() << "Created a TimeSeries";
 }
 
 void TimeSeries::appendSample(float value)

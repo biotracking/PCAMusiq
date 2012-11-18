@@ -20,7 +20,7 @@ class PCA
 public:
     PCA(QString path);
     ~PCA();
-    std::vector<float> project(IplImage* img);
+    std::vector<float> project(cv::Mat img);
     cv::Mat backProject(std::vector<float> vector);
 
     int getEVImageWidth() { return evImageWidth; }

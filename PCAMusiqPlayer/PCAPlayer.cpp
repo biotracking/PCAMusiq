@@ -6,26 +6,36 @@
 #include <QStringList>
 #include <QImage>
 
+#include "VideoSource/VideoSourceFile.h"
+#include "VideoSource/VideoSourceProsilicaCamera.h"
 
 #include "Config.h"
 #include "MathUtil.h"
+#include "CVUtil.h"
 
 
 PCAPlayer::PCAPlayer()
   : pca(QApplication::instance()->arguments()[2])
 {
     // load original video
-    QString videofilename = QApplication::instance()->arguments()[1];
-    qDebug() << "Opening " << videofilename;
-    capture = cvCaptureFromFile(videofilename.toStdString().c_str());
-    cvQueryFrame(capture);
+    QString input = QApplication::instance()->arguments()[1];
 
-    if(QApplication::instance()->arguments().contains("-l") ||
-       QApplication::instance()->arguments().contains("--live-video"))
+    // create concrete video source object;
+    if(input == "camera")
     {
-
+        qDebug() << "Video Input: Prosilica GigE Camera";
+        this->videoSource = new VideoSourceProsilicaCamera(this);
     }
+    else
+    {
+        qDebug() << "Video Input: " << input;
+        this->videoSource = new VideoSourceFile(input, this);
+    }
+}
 
+void PCAPlayer::start()
+{
+    this->videoSource->start();
 }
 
 QVector<QImage> PCAPlayer::eigenFrames()
@@ -37,104 +47,61 @@ QVector<QImage> PCAPlayer::eigenFrames()
         float max = maxMatf(eigenVector);
         cv::Mat visibleEigenVector = 255 * eigenVector / max;
 
-        QImage image = this->cvMat2QImage(visibleEigenVector, pca.getEVImageWidth(), pca.getEVImageHeight());
+        qDebug() << visibleEigenVector.depth();
+        QImage image = CVUtil::cvMat2QImage<unsigned char>(visibleEigenVector, pca.getEVImageWidth(), pca.getEVImageHeight());
 
         images.push_back(image);
     }
     return images;
 }
 
-void PCAPlayer::run()
+/*void PCAPlayer::run()
 {
 
     while(1)
+    { */
+void PCAPlayer::newFrame(cv::Mat frame)
+{
+
+    std::vector<float> pcaProjection = pca.project(frame);
+    QVector<float> coefficients(pcaProjection.size());
+    for(size_t c = 0; c < pcaProjection.size(); c++)
     {
-        IplImage* img = 0;
-        if(!cvGrabFrame(capture)){              // capture a frame
-          printf("Could not grab a frame\n\7");
-          //exit(0);
-        }
-        img = cvRetrieveFrame(capture);           // retrieve the captured frame
-
-
-
-#ifdef BLACK_AND_WHITE
-        cv::Mat capturedFrame(img);
-        cv::Mat capturedFrameBlackAndWhite(capturedFrame.rows, capturedFrame.cols, CV_8UC1);
-        cv::cvtColor(capturedFrame, capturedFrameBlackAndWhite, CV_BGR2GRAY, 1);
-        IplImage capturedFrameBlackAndWhiteIPL = (IplImage) capturedFrameBlackAndWhite;
-        img = &capturedFrameBlackAndWhiteIPL;
-#endif
-
-        std::vector<float> pcaProjection = pca.project(img);
-        QVector<float> coefficients(pcaProjection.size());
-        for(size_t c = 0; c < pcaProjection.size(); c++)
-        {
-            coefficients[c] = pcaProjection[c];
-        }
-        newCoefficients(coefficients);
-
-        QImage newImage = this->IplImage2QImage(img);
-        newFrame(newImage);
-        newReconstructedFrame(cvMat2QImage(pca.backProject(pcaProjection), pca.getEVImageWidth(), pca.getEVImageHeight()));
+        coefficients[c] = pcaProjection[c];
     }
-}
 
-size_t componentCount(cv::Mat m)
+    qDebug() << coefficients;
+    newCoefficients(coefficients);
+
+    QImage newImage = CVUtil::cvMat2QImage<unsigned char>(frame);
+    displayNewSourceFrame(newImage);
+
+    newReconstructedFrame(
+        CVUtil::cvMat2QImage<unsigned char>(pca.backProject(pcaProjection), pca.getEVImageWidth(), pca.getEVImageHeight())
+    );
+}
+/*
+    }
+}*/
+
+/*size_t componentCount(cv::Mat m)
 {
     size_t count = 1;
     for(int d = 0; d < m.dims; d++)
         count *= m.size[d];
     return count;
-}
+}*/
 
 float PCAPlayer::maxMatf(cv::Mat m)
 {
     float max = 0.0;
 
-    for(int v = 0; v < componentCount(m); v++)
+    for(unsigned int v = 0; v < CVUtil::componentCount(m); v++)
     {
         max = MAX(m.at<float>(v), max);
     }
 
     return max;
-}
-
-QImage PCAPlayer::cvMat2QImage(cv::Mat m, int width, int height)
-{
-    QImage image = QImage(width, height, QImage::Format_RGB888);
-
-
-    for(int x = 0; x < width; x++)
-    {
-        for(int y = 0; y < height; y++)
-        {
-            int pixelIndex = y * width + x;
-
-#ifdef BLACK_AND_WHITE
-            float r = m.at<float>(pixelIndex);
-            float g = r;
-            float b = r;
-
-#else
-            float b = m.at<float>(pixelIndex * 3 + 0);
-            float g = m.at<float>(pixelIndex * 3 + 1);
-            float r = m.at<float>(pixelIndex * 3 + 2);
-#endif
-
-#ifdef CLAMP_RECONSTRUCTED_COLOR
-            // getting some r, g, b's outside 0.0 to 255.0 (surely because of the information loss from PCA)
-            r = CLAMP(r, 0.0, 255.0);
-            g = CLAMP(g, 0.0, 255.0);
-            b = CLAMP(b, 0.0, 255.0);
-#endif
-
-            image.setPixel(x, y, qRgb(r,g,b));
-        }
-    }
-
-
-    return image;
 }
 
 QImage PCAPlayer::IplImage2QImage(IplImage *iplImage) {

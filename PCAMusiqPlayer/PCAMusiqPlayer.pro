@@ -14,13 +14,19 @@ HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
     MathUtil.h \
     CVUtil.h \
     OscSender.h \
-    PvAPI.h
+    PvAPI.h \
+    VideoSource/VideoSource.h \
+    VideoSource/VideoSourceFile.h \
+    VideoSource/VideoSourceProsilicaCamera.h
 
 SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     PCA.cpp \
     TimeSeries.cpp \
     CVUtil.cpp \
-    OscSender.cpp
+    OscSender.cpp \
+    VideoSource/VideoSource.cpp \
+    VideoSource/VideoSourceFile.cpp \
+    VideoSource/VideoSourceProsilicaCamera.cpp
 
 LIBS += -L$$PWD/lib -lPvAPI
 

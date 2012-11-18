@@ -86,7 +86,7 @@ PCA::PCA(QString path)
     }
 }
 
-std::vector<float> PCA::project(IplImage* img)
+std::vector<float> PCA::project(cv::Mat img)
 {
     cv::Mat imgMat(img);
 

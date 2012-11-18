@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     QObject::connect(
-        &player, SIGNAL(newFrame(QImage)),
+        &player, SIGNAL(displayNewSourceFrame(QImage)),
            this, SLOT(newVideoFrame(QImage))
     );
     QObject::connect(
@@ -97,7 +97,6 @@ void MainWindow::newCoefficients(TimeSeriesSamples coefficients)
     {
         TimeSeries* ts = coefficientTimeSeries[c];
         ts->appendSample(coefficients[c]);
-
     }
 }
 
