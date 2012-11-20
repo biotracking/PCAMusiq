@@ -38,8 +38,8 @@ def crop_resize_convert_to_match_target_image(image, target_image):
 def pca_image_dir(args):
    import sys
    import cv2
-   import cv
    import numpy as np
+   from scipy.misc import imresize
 
    in_path = args.images_directory
    stride = args.stride
@@ -50,7 +50,7 @@ def pca_image_dir(args):
        print "TARGET_MEAN shape: " + str(target_mean.shape) + ", type: " + str(target_mean.dtype)
 
    files = os.listdir(in_path)
-   out_dir = os.path.abspath(in_path) + "_every-" + str(stride) + "_PCA"
+   out_dir = os.path.abspath(in_path) + "_every-" + str(stride) + "_scale-" + str(args.scale) + "_PCA"
 
    f = 0
    matrix_test = None
@@ -61,6 +61,7 @@ def pca_image_dir(args):
        if f % stride != 0:
 	   continue
        imgraw = cv2.imread(os.path.join(in_path, image), -1)
+       imgraw = imresize(imgraw, (int(args.scale * imgraw.shape[0]), int(args.scale * imgraw.shape[1])))
        if target_mean != None:
            imgraw = crop_resize_convert_to_match_target_image(imgraw, target_mean)
        imgvector = imgraw.reshape(imgraw.size)
