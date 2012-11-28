@@ -3,7 +3,7 @@
 from OSC import OSCClient, OSCMessage
 import time, math
 
-period = 10
+period = 1
 param_count = 9
 param_low = 0
 param_high = 127
