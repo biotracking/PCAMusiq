@@ -63,6 +63,16 @@ void VideoSourceProsilicaCamera::frameCallback(tPvFrame* pFrame)
 
     cv::Mat frame(cv::Size(pFrame->Width, pFrame->Height), CV_8UC3, pFrame->ImageBuffer, cv::Mat::AUTO_STEP);
 
+    // RGB to BGR
+    uchar tmp;
+    uchar* data = (uchar*) frame.data;
+    for(int p = 0; p < frame.cols * frame.rows; p++)
+    {
+        tmp = data[p * 3];
+        data[p * 3] = data[p * 3 + 2];
+        data[p * 3 + 2] = tmp;
+    }
+
     this->receiver->newFrame(frame/*, RGB*/);
 }
 
@@ -70,7 +80,7 @@ void VideoSourceProsilicaCamera::frameCallback(tPvFrame* pFrame)
 
 /*
  * Pasted and modified by david.stolarsky@gmail.com, github.com/gimlids
- * for balchgroup@cc.gatech aquarium / PCA music box project
+ * for balchgroup@cc.gatech.edu / bio-tracking.org aquarium / PCA music box project
  *
  *
 | ==============================================================================
