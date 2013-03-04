@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QtOpenGL/QGLWidget>
 
-#include "TimeSeries.h"
+#include "LevelView.h"
 #include "Config.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -24,13 +24,13 @@ MainWindow::MainWindow(QWidget *parent)
            this, SLOT(newReconstructedFrame(QImage))
     );
     QObject::connect(
-        &player, SIGNAL(newCoefficients(TimeSeriesSamples)),
-           this, SLOT(newCoefficients(TimeSeriesSamples)),
+        &player, SIGNAL(newCoefficients(PCACoefficients)),
+           this, SLOT(newCoefficients(PCACoefficients)),
         Qt::DirectConnection
     );
     QObject::connect(
-        &player, SIGNAL(newCoefficients(TimeSeriesSamples)),
-     &oscSender, SLOT(newValues(TimeSeriesSamples)),
+        &player, SIGNAL(newCoefficients(PCACoefficients)),
+     &oscSender, SLOT(newValues(PCACoefficients)),
         Qt::DirectConnection
     );
 
@@ -49,9 +49,9 @@ MainWindow::MainWindow(QWidget *parent)
     float nextY = 0.0;
     for(int p = 0; p < RELEVANT_COMPONENTS; p++)
     {
-        TimeSeries* ts = new TimeSeries();
+        LevelView* ts = new LevelView();
 
-        coefficientTimeSeries.push_back(ts);
+        coefficientLevelViews.push_back(ts);
         coefficientsPlot.addToGroup(ts);
         //ts->setPos(0.0, nextY);
         ts->setPos(0.0, singlePlotHeight * p);
@@ -91,12 +91,13 @@ MainWindow::MainWindow(QWidget *parent)
     this->hide();
 }
 
-void MainWindow::newCoefficients(TimeSeriesSamples coefficients)
+void MainWindow::newCoefficients(PCACoefficients coefficients)
 {
+    //qDebug() << "hello from MainWindow::newCoefficients()";
     for(int c = 0; c < coefficients.size(); c++)
     {
-        TimeSeries* ts = coefficientTimeSeries[c];
-        ts->appendSample(coefficients[c]);
+        LevelView* ts = coefficientLevelViews[c];
+        ts->setValue(coefficients[c]);
     }
 }
 
@@ -106,9 +107,9 @@ void MainWindow::newVideoFrame(QImage frame)
     videoPixmap.setScale(0.5 * float(graphicsView.height()) / float(frame.height()));
 
 
-    for(int p = 0; p < coefficientTimeSeries.size(); p++)
+    for(int p = 0; p < coefficientLevelViews.size(); p++)
     {
-        TimeSeries* ts = coefficientTimeSeries[p];
+        LevelView* ts = coefficientLevelViews[p];
         QRectF tsRect(0.0, 0.0, PLOT_WIDTH, singlePlotHeight);
         ts->setBoundingRect(tsRect);
         ts->setPos(- PLOT_WIDTH, singlePlotHeight * p);

@@ -9,7 +9,7 @@ INCLUDEPATH += . external/cnpy external
 
 HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
     PCA.h \
-    TimeSeries.h \
+    LevelView.h \
     Config.h \
     MathUtil.h \
     CVUtil.h \
@@ -21,7 +21,7 @@ HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
 
 SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     PCA.cpp \
-    TimeSeries.cpp \
+    LevelView.cpp \
     CVUtil.cpp \
     OscSender.cpp \
     VideoSource/VideoSource.cpp \

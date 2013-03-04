@@ -1,19 +1,16 @@
-#ifndef LevelView_H
-#define LevelView_H
+#ifndef LEVELVIEW_H
+#define LEVELVIEW_H
 
 #include <QGraphicsItem>
 
 #include <vector>
-
-//typedef std::vector<float> LevelViewSamples;
-typedef QVector<float> LevelViewSamples;
 
 class LevelView : public QGraphicsItem
 {
 public:
     LevelView();
 
-    void appendSample(float value);
+    void setValue(float value);
 
     QRectF boundingRect() const;
     void setBoundingRect(QRectF rect) { this->rect = rect; }
@@ -21,7 +18,8 @@ public:
 //public slots:
 //    void append(float value);
 private:
-    LevelViewSamples values;
+    //TimeSeriesSamples values;
+    bool receivedFirstValue;
     float max;
     float min;
     float currentValue;
@@ -30,4 +28,4 @@ private:
     float valueLabelWidth;
 };
 
-#endif // LevelView_H
+#endif // LEVELVIEW_H

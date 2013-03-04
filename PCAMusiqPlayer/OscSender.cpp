@@ -18,7 +18,7 @@ OscSender::OscSender()
     processedFirstFrame = false;
 }
 
-void OscSender::newValues(TimeSeriesSamples samples)
+void OscSender::newValues(PCACoefficients samples)
 {
     for(int s = samples.size(); s < MUSIC_BOX_INT_COUNT; s++)
     {

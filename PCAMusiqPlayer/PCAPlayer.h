@@ -10,8 +10,10 @@
 
 #include "VideoSource/VideoSource.h"
 
-#include "TimeSeries.h"
+#include "LevelView.h"
 #include "PCA.h"
+
+typedef QVector<float> PCACoefficients;
 
 class PCAPlayer : public VideoSourceFrameReceiver
 {
@@ -23,8 +25,8 @@ public:
 signals:
     void displayNewSourceFrame(QImage frame);
     void newReconstructedFrame(QImage reconstructedFrame);
-    void newCoefficients(TimeSeriesSamples coefficients);
-    void newNormalizedCoefficients(TimeSeriesSamples coefficients);
+    void newCoefficients(PCACoefficients coefficients);
+    void newNormalizedCoefficients(PCACoefficients coefficients);
 
 public:
     PCAPlayer();
@@ -37,7 +39,7 @@ protected:
     void newFrame(cv::Mat frame);
 
 private:
-    void sendNormalizedCoefficients(TimeSeriesSamples coefficients);
+    void sendNormalizedCoefficients(PCACoefficients coefficients);
 
     QImage IplImage2QImage(IplImage *iplImage);
     //QImage cvMat2QImage(cv::Mat m, int width = -1, int height = -1);

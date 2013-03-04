@@ -5,7 +5,8 @@
 
 #include "lo/lo.h"
 
-#include "TimeSeries.h"
+#include "LevelView.h"
+#include "PCAPlayer.h"
 
 class OscSender : public QObject
 {
@@ -15,13 +16,13 @@ public:
     OscSender();
 
 public slots:
-    void newValues(TimeSeriesSamples samples);
+    void newValues(PCACoefficients samples);
 
 private:
     lo_address oscAppAddress;
 
-    TimeSeriesSamples minimums;
-    TimeSeriesSamples maximums;
+    PCACoefficients minimums;
+    PCACoefficients maximums;
     bool processedFirstFrame;
 };
 

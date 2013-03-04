@@ -9,7 +9,7 @@
 
 #include "PCAPlayer.h"
 #include "OscSender.h"
-#include "TimeSeries.h"
+#include "LevelView.h"
 
 class MainWindow : public QMainWindow
 {
@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow
     QGraphicsPixmapItem videoPixmap;
     QGraphicsPixmapItem reconstructedPixmap;
     QGraphicsItemGroup coefficientsPlot;
-    std::vector<TimeSeries*> coefficientTimeSeries;
+    std::vector<LevelView*> coefficientLevelViews;
 
     PCAPlayer player;
     OscSender oscSender;
@@ -33,7 +33,7 @@ class MainWindow : public QMainWindow
 public slots:
     void newVideoFrame(QImage frame);
     void newReconstructedFrame(QImage frame);
-    void newCoefficients(TimeSeriesSamples coefficients);
+    void newCoefficients(PCACoefficients coefficients);
 
 public:
     MainWindow(QWidget *parent = 0);
