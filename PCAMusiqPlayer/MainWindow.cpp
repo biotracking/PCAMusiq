@@ -90,14 +90,16 @@ void MainWindow::newVideoFrame(QImage frame)
     videoPixmap.setScale(scale);
     videoPixmap.setY(- frame.height() * scale);
 
+    singleIndicatorWidth = graphicsView.width() / RELEVANT_COMPONENTS;
     for(int p = 0; p < coefficientLevelViews.size(); p++)
     {
         LevelView* ts = coefficientLevelViews[p];
-        QRectF levelRect(singleIndicatorWidth * p, 0.0, singleIndicatorWidth, 100.0);
+        //QRectF levelRect(singleIndicatorWidth * p, 0.0, singleIndicatorWidth, 100.0);
+        QRectF levelRect(0.0, 0.0, singleIndicatorWidth, 100.0);
         ts->setBoundingRect(levelRect);
-        ts->setPos(singleIndicatorWidth * p, 0.0);
+        //ts->setPos(singleIndicatorWidth * p, 0.0);
     }
-    graphicsView.fitInView(scene.sceneRect(), Qt::KeepAspectRatio);
+    //graphicsView.fitInView(scene.sceneRect(), Qt::KeepAspectRatio);
 }
 
 void MainWindow::newReconstructedFrame(QImage frame)
