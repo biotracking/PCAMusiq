@@ -36,15 +36,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     graphicsView.resize(1280, 900);
 
-    QVector<QImage> eigenImages = player.eigenFrames();
+    //QVector<QImage> eigenImages = player.eigenFrames();
 
     singlePlotHeight = float(graphicsView.height()) / float(RELEVANT_COMPONENTS);
 
 
-    float eigenFrameAspect = float(eigenImages[0].width()) / float(eigenImages[0].height());
-    float eigenFrameDisplayWidth = singlePlotHeight * eigenFrameAspect;
+    //float eigenFrameAspect = float(eigenImages[0].width()) / float(eigenImages[0].height());
+    //float eigenFrameDisplayWidth = singlePlotHeight * eigenFrameAspect;
 
-    coefficientsPlot.setX(- eigenFrameDisplayWidth);
+    coefficientsPlot.setX(0.0);
 
     float nextY = 0.0;
     for(int p = 0; p < RELEVANT_COMPONENTS; p++)
@@ -56,11 +56,11 @@ MainWindow::MainWindow(QWidget *parent)
         //ts->setPos(0.0, nextY);
         ts->setPos(0.0, singlePlotHeight * p);
 
-        QImage eigenImage = eigenImages[p];
-        QGraphicsPixmapItem* evFrameItem = new QGraphicsPixmapItem(QPixmap::fromImage(eigenImage));
-        evFrameItem->setScale(eigenFrameDisplayWidth / eigenImage.width());
-        evFrameItem->setPos(-eigenFrameDisplayWidth, singlePlotHeight * p);
-        coefficientsPlot.addToGroup(evFrameItem);
+        //QImage eigenImage = eigenImages[p];
+        //QGraphicsPixmapItem* evFrameItem = new QGraphicsPixmapItem(QPixmap::fromImage(eigenImage));
+        //evFrameItem->setScale(eigenFrameDisplayWidth / eigenImage.width());
+        //evFrameItem->setPos(-eigenFrameDisplayWidth, singlePlotHeight * p);
+        //coefficientsPlot.addToGroup(evFrameItem);
 
         nextY += ts->boundingRect().height();
     }
