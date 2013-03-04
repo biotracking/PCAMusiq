@@ -12,9 +12,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , graphicsView(&scene)
 {
-
-
-
     QObject::connect(
         &player, SIGNAL(displayNewSourceFrame(QImage)),
            this, SLOT(newVideoFrame(QImage))
@@ -36,13 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     graphicsView.resize(1280, 900);
 
-    //QVector<QImage> eigenImages = player.eigenFrames();
-
     singlePlotHeight = float(graphicsView.height()) / float(RELEVANT_COMPONENTS);
-
-
-    //float eigenFrameAspect = float(eigenImages[0].width()) / float(eigenImages[0].height());
-    //float eigenFrameDisplayWidth = singlePlotHeight * eigenFrameAspect;
 
     coefficientsPlot.setX(0.0);
 
@@ -56,16 +47,8 @@ MainWindow::MainWindow(QWidget *parent)
         //ts->setPos(0.0, nextY);
         ts->setPos(0.0, singlePlotHeight * p);
 
-        //QImage eigenImage = eigenImages[p];
-        //QGraphicsPixmapItem* evFrameItem = new QGraphicsPixmapItem(QPixmap::fromImage(eigenImage));
-        //evFrameItem->setScale(eigenFrameDisplayWidth / eigenImage.width());
-        //evFrameItem->setPos(-eigenFrameDisplayWidth, singlePlotHeight * p);
-        //coefficientsPlot.addToGroup(evFrameItem);
-
         nextY += ts->boundingRect().height();
     }
-
-
 
     scene.addItem(&videoPixmap);
     scene.addItem(&reconstructedPixmap);
@@ -93,7 +76,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::newCoefficients(PCACoefficients coefficients)
 {
-    //qDebug() << "hello from MainWindow::newCoefficients()";
     for(int c = 0; c < coefficients.size(); c++)
     {
         LevelView* ts = coefficientLevelViews[c];
@@ -104,8 +86,7 @@ void MainWindow::newCoefficients(PCACoefficients coefficients)
 void MainWindow::newVideoFrame(QImage frame)
 {
     videoPixmap.setPixmap(QPixmap::fromImage(frame));
-    videoPixmap.setScale(0.5 * float(graphicsView.height()) / float(frame.height()));
-
+    videoPixmap.setScale(0.5 * float(graphicsView.width()) / float(frame.width()));
 
     for(int p = 0; p < coefficientLevelViews.size(); p++)
     {
