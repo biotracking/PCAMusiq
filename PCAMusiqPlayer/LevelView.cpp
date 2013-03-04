@@ -63,5 +63,8 @@ void LevelView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     QColor color = QColor(230, 50, 50);
     painter->setPen(color);
     painter->setBrush(QBrush(color));
-    painter->drawRect(rect.left(), rect.bottom() - normalized * rect.height(), rect.width(), rect.height() / 10.0);
+
+    float height = rect.height() / 10.0;
+    float range = rect.height() - height;
+    painter->drawRect(rect.left(), rect.bottom() - height - normalized * range, rect.width(), height);
 }
