@@ -12,9 +12,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , graphicsView(&scene)
 {
-
-
-
     QObject::connect(
         &player, SIGNAL(displayNewSourceFrame(QImage)),
            this, SLOT(newVideoFrame(QImage))
@@ -36,13 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     graphicsView.resize(1280, 900);
 
-    //QVector<QImage> eigenImages = player.eigenFrames();
-
-    singlePlotHeight = float(graphicsView.height()) / float(RELEVANT_COMPONENTS);
-
-
-    //float eigenFrameAspect = float(eigenImages[0].width()) / float(eigenImages[0].height());
-    //float eigenFrameDisplayWidth = singlePlotHeight * eigenFrameAspect;
+    singleIndicatorWidth = float(graphicsView.width()) / float(RELEVANT_COMPONENTS);
 
     coefficientsPlot.setX(0.0);
 
@@ -54,18 +45,10 @@ MainWindow::MainWindow(QWidget *parent)
         coefficientLevelViews.push_back(ts);
         coefficientsPlot.addToGroup(ts);
         //ts->setPos(0.0, nextY);
-        ts->setPos(0.0, singlePlotHeight * p);
-
-        //QImage eigenImage = eigenImages[p];
-        //QGraphicsPixmapItem* evFrameItem = new QGraphicsPixmapItem(QPixmap::fromImage(eigenImage));
-        //evFrameItem->setScale(eigenFrameDisplayWidth / eigenImage.width());
-        //evFrameItem->setPos(-eigenFrameDisplayWidth, singlePlotHeight * p);
-        //coefficientsPlot.addToGroup(evFrameItem);
+        ts->setPos(singleIndicatorWidth * p, 0.0);
 
         nextY += ts->boundingRect().height();
     }
-
-
 
     scene.addItem(&videoPixmap);
     scene.addItem(&reconstructedPixmap);
@@ -93,7 +76,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::newCoefficients(PCACoefficients coefficients)
 {
-    //qDebug() << "hello from MainWindow::newCoefficients()";
     for(int c = 0; c < coefficients.size(); c++)
     {
         LevelView* ts = coefficientLevelViews[c];
@@ -103,25 +85,28 @@ void MainWindow::newCoefficients(PCACoefficients coefficients)
 
 void MainWindow::newVideoFrame(QImage frame)
 {
+    float scale = 0.5 * float(graphicsView.width()) / float(frame.width());
     videoPixmap.setPixmap(QPixmap::fromImage(frame));
-    videoPixmap.setScale(0.5 * float(graphicsView.height()) / float(frame.height()));
-
+    videoPixmap.setScale(scale);
+    videoPixmap.setY(- frame.height() * scale);
 
     for(int p = 0; p < coefficientLevelViews.size(); p++)
     {
         LevelView* ts = coefficientLevelViews[p];
-        QRectF tsRect(0.0, 0.0, PLOT_WIDTH, singlePlotHeight);
-        ts->setBoundingRect(tsRect);
-        ts->setPos(- PLOT_WIDTH, singlePlotHeight * p);
+        QRectF levelRect(singleIndicatorWidth * p, 0.0, singleIndicatorWidth, 100.0);
+        ts->setBoundingRect(levelRect);
+        ts->setPos(singleIndicatorWidth * p, 0.0);
     }
     graphicsView.fitInView(scene.sceneRect(), Qt::KeepAspectRatio);
 }
 
 void MainWindow::newReconstructedFrame(QImage frame)
 {
+    float scale = 0.5 * float(graphicsView.width()) / float(frame.width());
     reconstructedPixmap.setPixmap(QPixmap::fromImage(frame));
-    reconstructedPixmap.setY(0.5 * graphicsView.height());
-    reconstructedPixmap.setScale(0.5 * float(graphicsView.height()) / float(frame.height()));
+    reconstructedPixmap.setX(0.5 * graphicsView.width());
+    reconstructedPixmap.setScale(scale);
+    reconstructedPixmap.setY(- frame.height() * scale);
 }
 
 MainWindow::~MainWindow()

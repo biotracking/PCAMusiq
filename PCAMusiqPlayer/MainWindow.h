@@ -28,7 +28,7 @@ class MainWindow : public QMainWindow
     PCAPlayer player;
     OscSender oscSender;
 
-    float singlePlotHeight;
+    float singleIndicatorWidth;
 
 public slots:
     void newVideoFrame(QImage frame);
