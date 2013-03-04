@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/bin/python
 
 from OSC import OSCClient, OSCMessage
 import time, math

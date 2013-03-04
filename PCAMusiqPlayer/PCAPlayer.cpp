@@ -62,7 +62,6 @@ QVector<QImage> PCAPlayer::eigenFrames()
     { */
 void PCAPlayer::newFrame(cv::Mat frame/*, ColorFormat colorFormat*/)
 {
-
     std::vector<float> pcaProjection = pca.project(frame);
     QVector<float> coefficients(pcaProjection.size());
     for(size_t c = 0; c < pcaProjection.size(); c++)

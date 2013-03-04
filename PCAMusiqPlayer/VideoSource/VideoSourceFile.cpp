@@ -14,7 +14,9 @@ VideoSourceFile::VideoSourceFile(QString filePath, VideoSourceFrameReceiver *rec
     : VideoSource(receiver)
     , QThread()
 {
+    std::cout<<"Opening video:"<<filePath.toStdString()<<std::endl;
     capture.open(filePath.toStdString().c_str());
+    std::cout<<"Opened video"<<std::endl;
 }
 
 void VideoSourceFile::run()
@@ -48,7 +50,7 @@ float VideoSourceFile::maxMatf(cv::Mat m)
 {
     float max = 0.0;
 
-    for(int v = 0; v < componentCount(m); v++)
+    for(unsigned int v = 0; v < componentCount(m); v++)
     {
         max = MAX(m.at<float>(v), max);
     }
