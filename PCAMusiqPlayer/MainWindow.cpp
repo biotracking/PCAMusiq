@@ -66,12 +66,15 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     graphicsView.setViewport(new QGLWidget());
-    graphicsView.show();
-    graphicsView.window()->setWindowTitle(labelString);
+    //graphicsView.show();
+    this->setCentralWidget(&graphicsView);
+    this->setWindowTitle(labelString);
+    this->resize(1280, 800);
+
 
     player.start();
 
-    this->hide();
+    //this->hide();
 }
 
 void MainWindow::newCoefficients(PCACoefficients coefficients)
@@ -83,13 +86,8 @@ void MainWindow::newCoefficients(PCACoefficients coefficients)
     }
 }
 
-void MainWindow::newVideoFrame(QImage frame)
+void MainWindow::layoutLevels()
 {
-    float scale = 0.5 * float(graphicsView.width()) / float(frame.width());
-    videoPixmap.setPixmap(QPixmap::fromImage(frame));
-    videoPixmap.setScale(scale);
-    videoPixmap.setY(- frame.height() * scale);
-
     singleIndicatorWidth = graphicsView.width() / RELEVANT_COMPONENTS;
     for(int p = 0; p < coefficientLevelViews.size(); p++)
     {
@@ -97,9 +95,18 @@ void MainWindow::newVideoFrame(QImage frame)
         //QRectF levelRect(singleIndicatorWidth * p, 0.0, singleIndicatorWidth, 100.0);
         QRectF levelRect(0.0, 0.0, singleIndicatorWidth, 100.0);
         ts->setBoundingRect(levelRect);
-        //ts->setPos(singleIndicatorWidth * p, 0.0);
+        ts->setPos(singleIndicatorWidth * p, 0.0);
     }
-    //graphicsView.fitInView(scene.sceneRect(), Qt::KeepAspectRatio);
+}
+
+void MainWindow::newVideoFrame(QImage frame)
+{
+    float scale = 0.5 * float(graphicsView.width()) / float(frame.width());
+    videoPixmap.setPixmap(QPixmap::fromImage(frame));
+    videoPixmap.setScale(scale);
+    videoPixmap.setY(- frame.height() * scale);
+
+    layoutLevels();
 }
 
 void MainWindow::newReconstructedFrame(QImage frame)
@@ -109,6 +116,12 @@ void MainWindow::newReconstructedFrame(QImage frame)
     reconstructedPixmap.setX(0.5 * graphicsView.width());
     reconstructedPixmap.setScale(scale);
     reconstructedPixmap.setY(- frame.height() * scale);
+}
+
+void MainWindow::resizeEvent(QResizeEvent e)
+{
+    qDebug() << "got resize event";
+    layoutLevels();
 }
 
 MainWindow::~MainWindow()

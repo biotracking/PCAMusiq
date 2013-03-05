@@ -6,6 +6,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
+#include <QResizeEvent>
 
 #include "PCAPlayer.h"
 #include "OscSender.h"
@@ -38,6 +39,11 @@ public slots:
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    void layoutLevels();
+
+protected:
+    virtual void resizeEvent(QResizeEvent e);
 };
 
 #endif // MAINWINDOW_H
