@@ -6,6 +6,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
+#include <QResizeEvent>
 
 #include "PCAPlayer.h"
 #include "OscSender.h"
@@ -28,7 +29,7 @@ class MainWindow : public QMainWindow
     PCAPlayer player;
     OscSender oscSender;
 
-    float singlePlotHeight;
+    float singleIndicatorWidth;
 
 public slots:
     void newVideoFrame(QImage frame);
@@ -38,6 +39,12 @@ public slots:
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    void layoutLevels();
+
+protected:
+    virtual void resizeEvent(QResizeEvent e);
+    virtual void MainWindow::keyPressEvent(QKeyEvent *e);
 };
 
 #endif // MAINWINDOW_H

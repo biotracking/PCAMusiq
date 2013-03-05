@@ -42,9 +42,9 @@ QRectF LevelView::boundingRect() const
 void LevelView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     QRectF plotRect = boundingRect();
-    plotRect.setRight(plotRect.right() - valueLabelWidth);
+    //plotRect.setRight(plotRect.right() - valueLabelWidth);
     QRectF labelRect = boundingRect();
-    labelRect.setLeft(plotRect.right());
+    //labelRect.setLeft(plotRect.right());
 
     QPointF middleLeft(plotRect.left(), plotRect.height()/2.0);
     QPointF middleRight(plotRect.right(), plotRect.height()/2.0);
@@ -55,7 +55,7 @@ void LevelView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     painter->setPen(QColor(0, 0, 0));
     painter->drawRect(boundingRect());
-    painter->drawRect(plotRect);
+    //painter->drawRect(plotRect);
 
     painter->drawText(labelRect, QString("%1").arg(currentValue));
 

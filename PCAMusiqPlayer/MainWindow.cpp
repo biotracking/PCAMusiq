@@ -33,7 +33,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     graphicsView.resize(1280, 900);
 
-    singlePlotHeight = float(graphicsView.height()) / float(RELEVANT_COMPONENTS);
+
+    singleIndicatorWidth = float(graphicsView.width()) / float(RELEVANT_COMPONENTS);
 
     coefficientsPlot.setX(0.0);
 
@@ -45,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
         coefficientLevelViews.push_back(ts);
         coefficientsPlot.addToGroup(ts);
         //ts->setPos(0.0, nextY);
-        ts->setPos(0.0, singlePlotHeight * p);
+        ts->setPos(singleIndicatorWidth * p, 0.0);
 
         nextY += ts->boundingRect().height();
     }
@@ -66,12 +67,15 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     graphicsView.setViewport(new QGLWidget());
-    graphicsView.show();
-    graphicsView.window()->setWindowTitle(labelString);
+    //graphicsView.show();
+    this->setCentralWidget(&graphicsView);
+    this->setWindowTitle(labelString);
+    this->resize(1280, 800);
+
 
     player.start();
 
-    this->hide();
+    //this->hide();
 }
 
 void MainWindow::newCoefficients(PCACoefficients coefficients)
@@ -83,26 +87,66 @@ void MainWindow::newCoefficients(PCACoefficients coefficients)
     }
 }
 
-void MainWindow::newVideoFrame(QImage frame)
+void MainWindow::layoutLevels()
 {
-    videoPixmap.setPixmap(QPixmap::fromImage(frame));
-    videoPixmap.setScale(0.5 * float(graphicsView.width()) / float(frame.width()));
-
+    singleIndicatorWidth = graphicsView.width() / RELEVANT_COMPONENTS;
+    qDebug() << "graphicsView.height(): " << graphicsView.height();
+    qDebug() << "videoPixmap.boundingRect().height(): " << videoPixmap.boundingRect().height();
+    float height = graphicsView.height() - videoPixmap.boundingRect().height() * videoPixmap.scale();
     for(int p = 0; p < coefficientLevelViews.size(); p++)
     {
         LevelView* ts = coefficientLevelViews[p];
-        QRectF tsRect(0.0, 0.0, PLOT_WIDTH, singlePlotHeight);
-        ts->setBoundingRect(tsRect);
-        ts->setPos(- PLOT_WIDTH, singlePlotHeight * p);
+        //QRectF levelRect(singleIndicatorWidth * p, 0.0, singleIndicatorWidth, 100.0);
+        QRectF levelRect(0.0, 0.0, singleIndicatorWidth, height);
+        ts->setBoundingRect(levelRect);
+        ts->setPos(singleIndicatorWidth * p, 0.0);
     }
-    graphicsView.fitInView(scene.sceneRect(), Qt::KeepAspectRatio);
+    scene.setSceneRect(0, -videoPixmap.scale() * videoPixmap.boundingRect().height(), graphicsView.width(), graphicsView.height());
+}
+
+void MainWindow::newVideoFrame(QImage frame)
+{
+    float scale = 0.5 * float(graphicsView.width()) / float(frame.width());
+    videoPixmap.setPixmap(QPixmap::fromImage(frame));
+    videoPixmap.setScale(scale);
+    videoPixmap.setY(- frame.height() * scale);
+
+    layoutLevels();
 }
 
 void MainWindow::newReconstructedFrame(QImage frame)
 {
+    float scale = 0.5 * float(graphicsView.width()) / float(frame.width());
     reconstructedPixmap.setPixmap(QPixmap::fromImage(frame));
-    reconstructedPixmap.setY(0.5 * graphicsView.height());
-    reconstructedPixmap.setScale(0.5 * float(graphicsView.height()) / float(frame.height()));
+    reconstructedPixmap.setX(0.5 * graphicsView.width());
+    reconstructedPixmap.setScale(scale);
+    reconstructedPixmap.setY(- frame.height() * scale);
+}
+
+void MainWindow::resizeEvent(QResizeEvent e)
+{
+    qDebug() << "got resize event";
+    layoutLevels();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    switch(e->key())
+    {
+    case 'f': case 'F':
+        if(this->isFullScreen())
+        {
+            this->setCursor(Qt::ArrowCursor);
+            this->showNormal();
+        }
+        else
+        {
+            this->setCursor(Qt::BlankCursor);
+            this->showFullScreen();
+        }
+        break;
+    default: break;
+    }
 }
 
 MainWindow::~MainWindow()
