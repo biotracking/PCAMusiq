@@ -89,14 +89,18 @@ void MainWindow::newCoefficients(PCACoefficients coefficients)
 void MainWindow::layoutLevels()
 {
     singleIndicatorWidth = graphicsView.width() / RELEVANT_COMPONENTS;
+    qDebug() << "graphicsView.height(): " << graphicsView.height();
+    qDebug() << "videoPixmap.boundingRect().height(): " << videoPixmap.boundingRect().height();
+    float height = graphicsView.height() - videoPixmap.boundingRect().height() * videoPixmap.scale();
     for(int p = 0; p < coefficientLevelViews.size(); p++)
     {
         LevelView* ts = coefficientLevelViews[p];
         //QRectF levelRect(singleIndicatorWidth * p, 0.0, singleIndicatorWidth, 100.0);
-        QRectF levelRect(0.0, 0.0, singleIndicatorWidth, 100.0);
+        QRectF levelRect(0.0, 0.0, singleIndicatorWidth, height);
         ts->setBoundingRect(levelRect);
         ts->setPos(singleIndicatorWidth * p, 0.0);
     }
+    scene.setSceneRect(0, -videoPixmap.scale() * videoPixmap.boundingRect().height(), graphicsView.width(), graphicsView.height());
 }
 
 void MainWindow::newVideoFrame(QImage frame)
