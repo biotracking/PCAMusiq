@@ -90,8 +90,6 @@ void MainWindow::newCoefficients(PCACoefficients coefficients)
 void MainWindow::layoutLevels()
 {
     singleIndicatorWidth = graphicsView.width() / RELEVANT_COMPONENTS;
-    qDebug() << "graphicsView.height(): " << graphicsView.height();
-    qDebug() << "videoPixmap.boundingRect().height(): " << videoPixmap.boundingRect().height();
     float height = graphicsView.height() - videoPixmap.boundingRect().height() * videoPixmap.scale();
     for(int p = 0; p < coefficientLevelViews.size(); p++)
     {
@@ -123,7 +121,7 @@ void MainWindow::newReconstructedFrame(QImage frame)
     reconstructedPixmap.setY(- frame.height() * scale);
 }
 
-void MainWindow::resizeEvent(QResizeEvent e)
+void MainWindow::resizeEvent(QResizeEvent e) // not getting this wtf
 {
     qDebug() << "got resize event";
     layoutLevels();
