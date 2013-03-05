@@ -44,6 +44,7 @@ public:
 
 protected:
     virtual void resizeEvent(QResizeEvent e);
+    virtual void MainWindow::keyPressEvent(QKeyEvent *e);
 };
 
 #endif // MAINWINDOW_H

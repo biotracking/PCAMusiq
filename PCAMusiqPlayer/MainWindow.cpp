@@ -128,6 +128,26 @@ void MainWindow::resizeEvent(QResizeEvent e)
     layoutLevels();
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    switch(e->key())
+    {
+    case 'f': case 'F':
+        if(this->isFullScreen())
+        {
+            this->setCursor(Qt::ArrowCursor);
+            this->showNormal();
+        }
+        else
+        {
+            this->setCursor(Qt::BlankCursor);
+            this->showFullScreen();
+        }
+        break;
+    default: break;
+    }
+}
+
 MainWindow::~MainWindow()
 {
 
