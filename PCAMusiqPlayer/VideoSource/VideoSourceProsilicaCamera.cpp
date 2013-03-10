@@ -125,7 +125,9 @@ void VideoSourceProsilicaCamera::frameCallback(tPvFrame* pFrame)
 #define TRUE     0
 #endif
 
-#define FRAMESCOUNT 15
+//#define FRAMESCOUNT 15
+// less lag?
+#define FRAMESCOUNT 2
 
 typedef struct
 {

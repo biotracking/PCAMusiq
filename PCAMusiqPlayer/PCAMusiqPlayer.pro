@@ -28,7 +28,7 @@ SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     VideoSource/VideoSourceFile.cpp \
     VideoSource/VideoSourceProsilicaCamera.cpp
 
-LIBS += -L$$(PWD)/bin -lPvAPI
+LIBS += -L$$PWD/bin -lPvAPI
 
 unix {
     CONFIG += link_pkgconfig
