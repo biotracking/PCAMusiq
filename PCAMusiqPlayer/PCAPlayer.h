@@ -36,7 +36,8 @@ public:
 
 protected:
     // new frame callback, called by video source
-    void newFrame(cv::Mat frame);
+    //void newFrame(cv::Mat frame);
+    void newFrame(Frame_8UC3 frame);
 
 private:
     void sendNormalizedCoefficients(PCACoefficients coefficients);
