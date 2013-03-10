@@ -12,7 +12,6 @@
 LevelView::LevelView()
 {
     valueLabelWidth = 100.0;
-    qDebug() << "Created a LevelView";
     receivedFirstValue = false;
 }
 
