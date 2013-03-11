@@ -5,6 +5,8 @@
 
 #include <opencv/cv.h>
 
+#include <tr1/memory>
+
 enum ColorFormat
 {
     RGB, BGR
@@ -21,12 +23,23 @@ protected:
     VideoSourceFrameReceiver* receiver;
 };
 
-typedef struct Frame_8UC3
+class Frame_8UC3
 {
-    unsigned char* data;
+public:
+    Frame_8UC3(int width, int height)
+    {
+        this->width = width;
+        this->height = height;
+        data.resize(width * height * 3);
+    }
+
+    std::vector<unsigned char> data;
     int width;
     int height;
-} Frame_8UC3;
+
+private:
+    Frame_8UC3() { }
+};
 
 class VideoSourceFrameReceiver : public QObject
 {

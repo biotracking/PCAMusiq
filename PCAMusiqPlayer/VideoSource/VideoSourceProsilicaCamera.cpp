@@ -61,16 +61,18 @@ void VideoSourceProsilicaCamera::frameCallback(tPvFrame* pFrame)
 
     assert(pFrame->Format == ePvFmtRgb24);
 
-    cv::Mat frame(cv::Size(pFrame->Width, pFrame->Height), CV_8UC3, pFrame->ImageBuffer, cv::Mat::AUTO_STEP);
+    //cv::Mat frame(cv::Size(pFrame->Width, pFrame->Height), CV_8UC3, pFrame->ImageBuffer, cv::Mat::AUTO_STEP);
+    Frame_8UC3 frame(pFrame->Width, pFrame->Height);
 
     // RGB to BGR
-    uchar tmp;
-    uchar* data = (uchar*) frame.data;
-    for(int p = 0; p < frame.cols * frame.rows; p++)
+    //uchar tmp;
+    uchar* data = (uchar*) pFrame->ImageBuffer;
+    for(int p = 0; p < pFrame->Width * pFrame->Height; p++)
     {
-        tmp = data[p * 3];
-        data[p * 3] = data[p * 3 + 2];
-        data[p * 3 + 2] = tmp;
+        //tmp = (unsigned char) pFrame->ImageBuffer[p * 3];
+        frame.data[p * 3 + 0] = (unsigned char) data[p * 3 + 2];
+        frame.data[p * 3 + 1] = (unsigned char) data[p * 3 + 1];
+        frame.data[p * 3 + 2] = (unsigned char) data[p * 3];
     }
 
     this->receiver->newFrame(frame/*, RGB*/);

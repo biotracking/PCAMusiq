@@ -34,7 +34,22 @@ void VideoSourceFile::run()
         img = capturedFrameBlackAndWhite;
 #endif
 
-        this->receiver->newFrame(img);
+        Frame_8UC3 frame(img.cols, img.rows);
+
+        unsigned char* data = (unsigned char*) img.data;
+        for(int x = 0; x < frame.width; x++)
+        {
+            for(int y = 0; y < frame.height /*&& y < 320*/ /*DEBUG DEBUG DELETE SECOND CONDITION*/; y++)
+            {
+                int componentIndex = y * img.step[0] + x * img.step[1];
+
+                frame.data[y * frame.width * 3 + x * 3 + 0] = data[componentIndex + 0];
+                frame.data[y * frame.width * 3 + x * 3 + 1] = data[componentIndex + 1];
+                frame.data[y * frame.width * 3 + x * 3 + 2] = data[componentIndex + 2];
+            }
+        }
+
+        this->receiver->newFrame(frame);
     }
 }
 
