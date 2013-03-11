@@ -5,6 +5,7 @@
 #include <QString>
 #include <QStringList>
 #include <QImage>
+#include <QDateTime>
 
 #include "Config.h"
 #include "MathUtil.h"
@@ -22,24 +23,27 @@ VideoSourceFile::VideoSourceFile(QString filePath, VideoSourceFrameReceiver *rec
 void VideoSourceFile::run()
 {
     cv::Mat img;
+    qint64 frameDuration = (qint64) (1000.0 / capture.get(CV_CAP_PROP_FPS));
 
+    qint64 lastTime = QDateTime::currentMSecsSinceEpoch() - frameDuration,
+           currentTime;
     while(1)
     {
-        capture.read(img);
+        currentTime = QDateTime::currentMSecsSinceEpoch();
+        if(currentTime - lastTime < frameDuration)
+        {
+            unsigned long sleepTime = 1000 * (frameDuration - (currentTime - lastTime));
+            usleep(sleepTime);
+        }
 
-#ifdef BLACK_AND_WHITE
-        cv::Mat capturedFrame(img);
-        cv::Mat capturedFrameBlackAndWhite(capturedFrame.rows, capturedFrame.cols, CV_8UC1);
-        cv::cvtColor(capturedFrame, capturedFrameBlackAndWhite, CV_BGR2GRAY, 1);
-        img = capturedFrameBlackAndWhite;
-#endif
+        capture.read(img);
 
         Frame_8UC3 frame(img.cols, img.rows);
 
         unsigned char* data = (unsigned char*) img.data;
         for(int x = 0; x < frame.width; x++)
         {
-            for(int y = 0; y < frame.height /*&& y < 320*/ /*DEBUG DEBUG DELETE SECOND CONDITION*/; y++)
+            for(int y = 0; y < frame.height; y++)
             {
                 int componentIndex = y * img.step[0] + x * img.step[1];
 
@@ -50,6 +54,8 @@ void VideoSourceFile::run()
         }
 
         this->receiver->newFrame(frame);
+
+        lastTime = currentTime;
     }
 }
 
