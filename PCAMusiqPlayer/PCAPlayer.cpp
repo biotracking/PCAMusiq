@@ -65,7 +65,6 @@ void PCAPlayer::newFrame(Frame_8UC3 _frame)
 {
     cv::Mat frame(cv::Size(_frame.width, _frame.height), CV_8UC3, & _frame.data[0], cv::Mat::AUTO_STEP);
 
-    std::cerr << "_frame.data.size(): " << _frame.data.size() << std::endl;
     std::vector<float> pcaProjection = pca.project(frame);
     QVector<float> coefficients(pcaProjection.size());
     for(size_t c = 0; c < pcaProjection.size(); c++)
