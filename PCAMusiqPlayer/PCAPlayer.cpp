@@ -7,6 +7,7 @@
 #include <QImage>
 
 #include "VideoSource/VideoSourceFile.h"
+#include "VideoSource/VideoSourceOpenCVCamera.h"
 #include "VideoSource/VideoSourceProsilicaCamera.h"
 
 #include "Config.h"
@@ -21,10 +22,15 @@ PCAPlayer::PCAPlayer()
     QString input = QApplication::instance()->arguments()[1];
 
     // create concrete video source object;
-    if(input == "camera")
+    if(input == "camera-prosilica")
     {
         qDebug() << "Video Input: Prosilica GigE Camera";
         this->videoSource = new VideoSourceProsilicaCamera(this);
+    }
+    else if(input == "camera-opencv")
+    {
+        qDebug() << "Video Input: OpenCV camera capture";
+        this->videoSource = new VideoSourceOpenCVCamera(this);
     }
     else
     {

@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     {
         std::cout << "Usage: " << argv[0] << " <video_source> <pca> <osc_send_uri>" << std::endl;
         std::cout << std::endl;
-        std::cout << "video_source: \"camera\" (prosilica grabber) or path to a video file" << std::endl;
+        std::cout << "video_source: \"camera-prosilica\", \"camera-opencv\", or path to video file" << std::endl;
         std::cout << "pca: path to pre-computed pca (generated with e.g. pcamusiq)" << std::endl;
         std::cout << "osc_send_uri: OSC address of MusicBox" << std::endl;
         std::cout << std::endl;

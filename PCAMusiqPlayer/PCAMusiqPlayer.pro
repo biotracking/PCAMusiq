@@ -17,7 +17,9 @@ HEADERS += MainWindow.h PCAPlayer.h external/cnpy/cnpy.h \
     PvAPI.h \
     VideoSource/VideoSource.h \
     VideoSource/VideoSourceFile.h \
-    VideoSource/VideoSourceProsilicaCamera.h
+    VideoSource/VideoSourceProsilicaCamera.h \
+    VideoSource/VideoSourceOpenCVCamera.h \
+    VideoSource/VideoSourceOpenCV.h
 
 SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     PCA.cpp \
@@ -26,7 +28,9 @@ SOURCES += main.cpp MainWindow.cpp PCAPlayer.cpp external/cnpy/cnpy.cpp \
     OscSender.cpp \
     VideoSource/VideoSource.cpp \
     VideoSource/VideoSourceFile.cpp \
-    VideoSource/VideoSourceProsilicaCamera.cpp
+    VideoSource/VideoSourceProsilicaCamera.cpp \
+    VideoSource/VideoSourceOpenCVCamera.cpp \
+    VideoSource/VideoSourceOpenCV.cpp
 
 LIBS += -L$$PWD/bin -lPvAPI
 
