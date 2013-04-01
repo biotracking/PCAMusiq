@@ -12,19 +12,16 @@
 
 class VideoSourceOpenCV : public VideoSource, public QThread
 {
-/*    Q_OBJECT
 
 public:
-
-signals:
-    //void newFrame(QImage frame); */
-
-public:
-    VideoSourceOpenCV(VideoSourceFrameReceiver* receiver);
     void start() { QThread::start(); }
     void run();
 
 protected:
+    // dont't instantiate this class. must pick a subclass, either VideoSourceOpenCVCamera or VideoSourceFile
+    // at time of writing
+    VideoSourceOpenCV(VideoSourceFrameReceiver* receiver);
+
     cv::VideoCapture capture;
 
 private:

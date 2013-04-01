@@ -72,6 +72,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowTitle(labelString);
     this->resize(1280, 800);
 
+    graphicsView.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    graphicsView.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     player.start();
 
@@ -89,7 +91,7 @@ void MainWindow::newCoefficients(PCACoefficients coefficients)
 
 void MainWindow::layoutLevels()
 {
-    singleIndicatorWidth = graphicsView.width() / RELEVANT_COMPONENTS;
+    singleIndicatorWidth = float(graphicsView.width()) / float(RELEVANT_COMPONENTS);
     float height = graphicsView.height() - videoPixmap.boundingRect().height() * videoPixmap.scale();
     for(int p = 0; p < coefficientLevelViews.size(); p++)
     {
