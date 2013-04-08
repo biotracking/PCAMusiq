@@ -8,9 +8,6 @@
 
 #include "external/cnpy/cnpy.h"
 
-
-
-
 class PCA
 {
     //Q_OBJECT
@@ -35,6 +32,13 @@ private:
 
 
     cv::Mat backProjection;
+
+    // not part of state.
+    // don't want OpenCV to keep allocating new matrix data, so keep these here.
+    cv::Mat scaledImgMat;
+    cv::Mat coefficients;
+    cv::Mat imageVector;
+    bool initializedImageVector;
 };
 
 #endif // PCA_H

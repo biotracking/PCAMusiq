@@ -60,7 +60,10 @@ MainWindow::MainWindow(QWidget *parent)
     QString labelString;
     for (int a = 0; a < QApplication::instance()->arguments().size(); a++)
     {
-        QFileInfo info(QApplication::instance()->arguments()[a]);
+        QString arg = QApplication::instance()->arguments()[a];
+        if(arg[arg.size()-1] == '/')
+            arg.chop(1);
+        QFileInfo info(arg);
         labelString = labelString + info.fileName() + ", ";
     }
     labelString.truncate(labelString.size()-2);

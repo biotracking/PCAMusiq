@@ -35,23 +35,26 @@ cv::Mat vectorizeMat32f(cv::Mat m)
     return cv::Mat(1, CVUtil::componentCount(m), CV_MAT32F, m.data);
 }
 
-cv::Mat vectorizeMat(cv::Mat m)
+/*
+ * Was creating and returning vectorized cv::Mat, but that was leaking memory,
+ * so allocating output matrix just once (calling cvCreateMat()) in caller.
+ */
+void vectorizeMat(cv::Mat & vectorizedMat, const cv::Mat & m)
 {
     unsigned int values = m.channels();
     for(int d = 0; d < m.dims; d++)
         values *= m.size[d];
 
-    cv::Mat vector = cvCreateMat(1, values, CV_MAT32F);
     unsigned char* mData = (unsigned char*) m.data;
-    float* vData = (float*) vector.data;
+    float* vData = (float*) vectorizedMat.data;
     for(unsigned int i = 0; i < values; i++)
     {
         vData[i] = float(mData[i]);
     }
-    return vector;
 }
 
 PCA::PCA(QString path)
+    : initializedImageVector(false)
 {
     QDir pcaDir(path);
     QStringList npyFilePaths = pcaDir.entryList(QStringList("*.npy"));
@@ -86,20 +89,24 @@ PCA::PCA(QString path)
     }
 }
 
-std::vector<float> PCA::project(cv::Mat img)
+std::vector<float> PCA::project(cv::Mat imgMat)
 {
-    cv::Mat imgMat(img);
-
-    cv::Mat scaledImgMat;
     cv::resize(imgMat, scaledImgMat, cv::Size(evImageWidth, evImageHeight), 0, 0, cv::INTER_CUBIC);
 
-    cv::Mat imageVector = vectorizeMat(scaledImgMat);
+    if(!initializedImageVector)
+    {
+        unsigned int values = scaledImgMat.channels();
+        for(int d = 0; d < scaledImgMat.dims; d++)
+            values *= scaledImgMat.size[d];
+        imageVector = cvCreateMat(1, values, CV_MAT32F);
+        initializedImageVector = true;
+    }
+    vectorizeMat(imageVector, scaledImgMat);
 
-    cv::Mat coefficients;
+    std::vector<float> result(RELEVANT_COMPONENTS);
 
     cvPCA.project(imageVector, coefficients);
 
-    std::vector<float> result(RELEVANT_COMPONENTS);
     for(size_t c = 0; c < result.size(); c++)
     {
         result[c] = ((float*)coefficients.data)[c];
